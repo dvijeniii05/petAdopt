@@ -1,4 +1,4 @@
-package com.petadopt;
+package com.dvijeniii05.petadopt;
 
 import com.facebook.react.ReactActivity;
 

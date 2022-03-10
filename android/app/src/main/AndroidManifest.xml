@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.petadopt">
+  package="com.dvijeniii05.petadopt">
 
     <uses-permission android:name="android.permission.INTERNET" />
 

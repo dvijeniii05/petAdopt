@@ -9,28 +9,19 @@
 import React from 'react';
 import {
   SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  View,
+  StatusBar
 } from 'react-native';
 import {NavigationContainer} from '@react-navigation/native'
-import {createNativeStackNavigator} from '@react-navigation/native-stack'
-
-import AuthScreen from './Screens/auth';
-
-const Stack = createNativeStackNavigator()
-
+import AppDrawer from './Navigation/AppStack';
+import { COLORS } from './assets/colors';
 
 
 function App () {
   return (
     <SafeAreaView style={{flex:1}}>
+      <StatusBar backgroundColor={COLORS.background} hidden={true}/>
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name='AuthScreen' component={AuthScreen}/>
-      </Stack.Navigator>
+      <AppDrawer/>
     </NavigationContainer>
     </SafeAreaView>
   )
