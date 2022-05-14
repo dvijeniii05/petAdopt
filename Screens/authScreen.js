@@ -19,8 +19,8 @@ function AuthScreen ({navigation}) {
             <Image source={require('../assets/auth_logo.jpg')} style={styles.auth_logo}/>
         </View>
         <View style={styles.auth_text_container}>
-        <Text style={{flex:2,fontSize:25, textAlign:'center'}}>Добро пожаловать в petAdopt</Text>
-        <Text style={{flex:1.8,fontSize:12, textAlign:'center'}}>Пожалуйста пройдите регистрацию либо произведите вход в уже существующий аккаунт</Text>
+        <Text style={{flex:2, fontSize:25, textAlign:'center', color:COLORS.dark}}>Добро пожаловать в petAdopt</Text>
+        <Text style={{flex:1.8, fontSize:12, textAlign:'center',color:COLORS.dark}}>Пожалуйста пройдите регистрацию либо произведите вход в уже существующий аккаунт</Text>
         </View>
         <View style={styles.auth_buttons_container}>
             <TouchableOpacity 

@@ -7,7 +7,8 @@ import {
     TouchableOpacity,
     Image,
     FlatList,
-    Dimensions
+    Dimensions,
+    ActivityIndicator
 } from 'react-native'
 import { styles } from '../AllStyles'
 import DropDownPicker from 'react-native-dropdown-picker'
@@ -15,10 +16,16 @@ import {launchCamera, launchImageLibrary} from 'react-native-image-picker'
 import AntIcon from 'react-native-vector-icons/AntDesign'
 import {ITEM_WIDTH} from './postView'
 import axios from 'axios'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import 'react-native-get-random-values'
+import { v4 as uuidv4 } from 'uuid';
+import storage from '@react-native-firebase/storage';
+import {ALL_POSTS} from '@env'
+import { COLORS } from '../assets/colors'
 
 const {width: WIDTH, height: HEIGHT} = Dimensions.get('window')
 
-function CreatePost() {
+function CreatePost({navigation}) {
     const[typeOpen, setTypeOpen] =useState(false)
     const[genderOpen, setGenderOpen] = useState(false)
     const[ageOpen, setAgeOpen] = useState(false)
@@ -29,12 +36,14 @@ function CreatePost() {
     const[strayValue, setStrayValue] = useState(null)
     const[stirilValue, setStirilValue] = useState(null)
     const[jabValue, setJabValue] = useState(null)
-    const[breedValue, setBreedValue] = useState(null)
+    const[breedValue, setBreedValue] = useState(null) // Change null to something else, possibly [] to get proper error from server when left empty
     const[ageValue, setAgeValue] = useState(null)
     const[genderValue, setGenderValue] = useState(null)
-    const[image, setImage] = useState(null)
-    const[bnr, setBnr] =useState(null)
-    const[desc, setDesc] = useState(null)
+    const[desc, setDesc] = useState(null) // Change null to something else, possibly [] to get proper error from server when left empty
+
+    const[loading, setLoading] = useState(false)
+
+    const[images, setImages] = useState([])
 
     const type = [{
         label: '😺',
@@ -45,14 +54,14 @@ function CreatePost() {
     }]
     const gender = [{
         label: 'мальчик',
-        value: 'мальчик'
+        value: 'Мальчик'
     }, {
         label:'девочка',
-        value:'девочка'
+        value:'Девочка'
     }]
     const age = [{
         label: 'до 1 года',
-        value: 'до 1 года'
+        value: 'До 1 года'
     }, {
         label:'1 год',
         value:'1 год'
@@ -87,40 +96,39 @@ function CreatePost() {
     },]
     const stray = [{
         label: 'да',
-        value: 'уличный'
+        value: 'Уличный'
     }, {
         label:'нет',
-        value:'домашний'
+        value:'Домашний'
     }]
     const stiril = [{
         label: 'да',
-        value: 'стирильный'
+        value: 'Стирильный'
     }, {
         label:'нет',
-        value:'не стирильный'
+        value:'Не стирильный'
     }]
     const jab = [{
         label: 'да',
-        value: 'привит'
+        value: 'Привит'
     }, {
         label:'нет',
-        value:'не привит'
+        value:'Не привит'
     }]
     
     async function getImages() {
 
-        const result = await launchImageLibrary ({mediaType:'photo',selectionLimit:3, maxWidth:ITEM_WIDTH, maxHeight:ITEM_WIDTH, includeBase64: true})
-        
-        setImage(result.assets)
-        setBnr(result.assets.base64)
-        console.log(image)
-
+        const result = await launchImageLibrary ({mediaType:'photo',selectionLimit:3, maxWidth:ITEM_WIDTH, maxHeight:ITEM_WIDTH})
+        setImages(result.assets)
     }
 
     async function sendPost() {
-        const URL = 'http://10.0.2.2:3000/posts/'
+        
+        const jwt = await AsyncStorage.getItem('jwt')
+        console.log(jwt)
+
        try{ 
-           await axios.post(URL, {
+           const result = await axios.post(`${ALL_POSTS}`, {
             type: typeValue,
             breed: breedValue,
             gender: genderValue,
@@ -128,49 +136,42 @@ function CreatePost() {
             stray: strayValue,
             stiril: stirilValue,
             jab: jabValue,
-            description: desc
-        }) 
-    } catch(err) {
-        console.log(err)
-    }
-    }
-
-   /*  async function sendImage() {
-        const fd = new FormData()
-        const imgs = image
-        if(imgs) {
-            for(let i = 0; i < imgs.length; i++) {
-                fd.append('image', {
-                    name: imgs.fileName,
-                    uri: imgs.uri,
-                    type: 'image/jpeg'
-                    })
+            description: desc,
+            urls: await sendImage()
+        }, {
+            headers: {
+                'auth-token' : jwt
             }
-            console.log(fd)
-            fetch('http://10.0.2.2:3000/images', {
-                method: 'POST', // or 'PUT'
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-                body: fd,
+        }) 
+        setLoading(false)
+        navigation.navigate('Home')
+        console.log(result.data)
+    } catch(err) {
+        setLoading(false)
+        console.log('Tut', breedValue, desc)
+        alert(err.response.data)
+    }
+    }
+
+    async function sendImage() {
+        if(images) {
+            const dbUrls = []
+            for(i = 0; i < images.length; i++ ) {
+                const unicode = uuidv4()
+                const locRef = storage().ref(`${unicode}`)
+                const pathToImg = `${images[i].uri}`
+                await locRef.putFile(pathToImg)
+
+                await locRef.getDownloadURL()
+                .then((url) => {
+                dbUrls.push(url)
                 })
-            .then(data => {
-                console.log('Success:', data);
-            })
-            .catch((error) => {
-                console.error('Error:', error.message);
-            }); 
+            }
+            return dbUrls
         }
-    } */
-
-   /* async function sendImage() {
-
-        const locRef = storage().ref('maybe.jpg')
-        const pathToImg = `${utils.FilePath.PICTURES_DIRECTORY}/black-t-shirt-sm.png`
-
-        await locRef.putFile(pathToImg)
-
-    } */
+        
+        
+    } 
 
     const renderItem = ({item}) => {
         return(
@@ -184,26 +185,35 @@ function CreatePost() {
     }
 
     return(
-        <View style={styles.create_post_background}>
-            
+        <View style={[styles.create_post_background, loading && {opacity: 0.2}]}>
+            <View style={styles.loader}>
+            <ActivityIndicator
+            animating={loading}
+            size='large'
+            color='#4B4F40'
+            />
+            </View>
             <View style={styles.post_middle_container}>
                 <View style={[styles.post_image_container, {marginBottom:10}]}>
                     <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
+                    {images.length !== 2  &&
                     <TouchableOpacity 
                     style={styles.add_pic_button}
                     onPress={()=> getImages()}
                     >
-                        <AntIcon name='plussquareo' size={50} color='white'/>
+                        <AntIcon name='plussquareo' size={50} color={COLORS.dark}/>
                     </TouchableOpacity>
-                    {!image ?
-                    <Text style={{fontSize:20, top:10}}>Добавить фотографии</Text> : <Text style={{fontSize:20, top:10}}>Фотографии добавлены</Text>
+                     }
+                    
+                    {images.length !== 2 ?
+                    <Text style={{fontSize:20, top:10, color:COLORS.dark}}>Добавить 2 фотографии</Text> : <Text style={{fontSize:20, top:10}}>Фотографии добавлены</Text>
                     }
                     </View>
-                    {image &&
+                    {images &&
                     <View style={{flex:0.8}}>
                     <View style={{width:WIDTH, height:ITEM_WIDTH*0.5, alignItems:'center'}}>
                         <FlatList
-                        data={image}
+                        data={images}
                         renderItem={renderItem}
                         horizontal/>
                     </View>
@@ -222,7 +232,7 @@ function CreatePost() {
             <View style={styles.post_category_one_container}>
             <View style={styles.post_category_one}>
                 <View style={[styles.post_category_text_container, {zIndex:5}]}>
-                <Text style={{color:'black'}}>Питомец:</Text>
+                <Text style={{color:COLORS.dark, fontWeight:'bold', fontSize:15}}>Питомец:</Text>
                 <DropDownPicker
                 open={typeOpen} 
                 placeholder=''
@@ -234,7 +244,7 @@ function CreatePost() {
                 containerStyle={{width:'60%'}}/>
                 </View>
                 <View style={[styles.post_category_text_container, {zIndex:4}]}>
-                <Text style={{color:'black'}}>Пол:</Text>
+                <Text style={{color:COLORS.dark, fontWeight:'bold', fontSize:15}}>Пол:</Text>
                 <DropDownPicker
                 open={genderOpen} 
                 placeholder=''
@@ -246,7 +256,7 @@ function CreatePost() {
                 containerStyle={{width:'60%'}}/>
                 </View>
                 <View style={[styles.post_category_text_container, {zIndex:3}]}>
-                <Text style={{color:'black'}}>Возраст:</Text>
+                <Text style={{color:COLORS.dark, fontWeight:'bold', fontSize:15}}>Возраст:</Text>
                 <DropDownPicker
                 open={ageOpen} 
                 placeholder=''
@@ -262,7 +272,7 @@ function CreatePost() {
             <View style={styles.post_category_one_container}>
             <View style={styles.post_category_one}>
             <View style={[styles.post_category_text_container, {zIndex:5}]}>
-                <Text style={{color:'black'}}>Уличный:</Text>
+                <Text style={{color:COLORS.dark, fontWeight:'bold', fontSize:15}}>Уличный:</Text>
                 <DropDownPicker
                 open={strayOpen} 
                 placeholder=''
@@ -274,7 +284,7 @@ function CreatePost() {
                 containerStyle={{width:'60%'}}/>
                 </View>
                 <View style={[styles.post_category_text_container, {zIndex:4}]}>
-                <Text style={{color:'black'}}>Стирил.:</Text>
+                <Text style={{color:COLORS.dark, fontWeight:'bold', fontSize:15}}>Стирил.:</Text>
                 <DropDownPicker
                 open={stirilOpen} 
                 placeholder=''
@@ -286,7 +296,7 @@ function CreatePost() {
                 containerStyle={{width:'60%'}}/>
                 </View>
                 <View style={[styles.post_category_text_container, {zIndex:3}]}>
-                <Text style={{color:'black'}}>Привит:</Text>
+                <Text style={{color:COLORS.dark, fontWeight:'bold', fontSize:15}}>Привит:</Text>
                 <DropDownPicker
                 open={jabOpen} 
                 placeholder=''
@@ -306,14 +316,17 @@ function CreatePost() {
                     placeholder='Опишите все детали здесь'
                     placeholderTextColor='black'
                     onChangeText={(text)=> setDesc(text)}
-                    multiline={true}/>
+                    multiline={true}
+                    style={{fontSize:17, color:'black'}}/>
                 </ScrollView>
             </View>
             <View style={styles.post_create_button_container}>
                 <TouchableOpacity 
                 style={styles.post_create_button}
-                onPress={()=> sendImage()}>
-                    <Text style={{fontSize:18, color:'white'}}>Опубликовать</Text>
+                onPress={()=> {
+                    setLoading(true)
+                    sendPost()}}>
+                    <Text style={{fontSize:18, color:COLORS.bej}}>Опубликовать</Text>
                 </TouchableOpacity>
             </View>
             </View>

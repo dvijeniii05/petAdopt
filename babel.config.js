@@ -11,6 +11,7 @@ module.exports = {
           version: '7.0.0-beta.0',
       },
   ],
+  ['module:react-native-dotenv'],
     'react-native-reanimated/plugin',
   ],
 };

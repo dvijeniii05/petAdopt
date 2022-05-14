@@ -7,14 +7,15 @@ import {
     TouchableWithoutFeedback,
     TextInput,
     FlatList,
+    LogBox
 } from 'react-native'
 import { styles } from '../AllStyles'
-import { COLORS } from '../assets/colors'
-import Icon from 'react-native-vector-icons/AntDesign'
-import Ionicons from 'react-native-vector-icons/Ionicons'
 import axios from 'axios'
+import {ALL_POSTS, HOST} from '@env'
+import { useFocusEffect } from '@react-navigation/native'
+import { COLORS } from '../assets/colors'
 
-const allPostsUrl = 'http://10.0.2.2:3000/posts/'
+LogBox.ignoreLogs(['Encountered two children with the same key, ...'])
 
 function HideKeyboard ({children}) {
     return(
@@ -27,24 +28,27 @@ function HideKeyboard ({children}) {
 function HomeScreen ({navigation}) {
 const [data, setData] = useState([])
 
-useEffect(()=> {
-    getAll()
-}, [])
+useFocusEffect(
+    React.useCallback( () => {
 
-async function getAll() {
-    try{
-        const allData = await axios.get(allPostsUrl)
-        console.log(allData.data)
-        setData(allData.data)
-    } catch(err) {
-        console.log(err)
-    }
-}
+        async function getAll() {
+            try{
+                const allData = await axios.get(`${ALL_POSTS}`)
+                console.log(allData.data)
+                setData(allData.data)
+            } catch(err) {
+                console.log(err)
+            }
+        }
+
+        getAll()
+
+    }, [])
+)
 
 async function filterByType (type) {
-    const URL = `http://10.0.2.2:3000/posts/${type}`
     try {
-        const filteredCats = await axios.get(URL)
+        const filteredCats = await axios.get(`${ALL_POSTS}${type}`)
         console.log(filteredCats.data)
         setData(filteredCats.data)
     } catch(err) {
@@ -54,19 +58,19 @@ async function filterByType (type) {
 
     const renderItem = ({item}) => {
         return(
-            <View>
+            <View >
             <TouchableOpacity 
             style={styles.item_container}
             onPress={()=> navigation.navigate('PostView',{
                 id: item._id
             })}>
                 <View style={styles.item_image_container}>
-                    <Image source={require('../assets/cat_walking.webp')} resizeMode='contain' style={styles.item_image}/>
+                    <Image source={{uri: `${item.urls[0]}`}} resizeMode='cover' style={styles.item_image}/>
                 </View>
                 <View style={styles.item_text_container}>
-                    <Text>Name: {item.type}</Text>
-                    <Text>Age: {item.breed}</Text>
-                    <Text>Location: {item.gender}</Text>
+                    <Text style={{textAlign:'center', color:COLORS.bej, fontSize:16}}>{item.gender}</Text>
+                    <Text style={{textAlign:'center',color:COLORS.bej, fontSize:16}}>{item.age}</Text>
+                    <Text style={{textAlign:'center', color:COLORS.bej, fontSize:16}}>{item.stray}</Text>
                 </View>
             </TouchableOpacity>
             </View>
@@ -77,28 +81,18 @@ async function filterByType (type) {
         <HideKeyboard>
         <View style={{flex:1}}>
         <View style={styles.home}>
-            <View style={styles.home_top_container}>
-                <TouchableOpacity style={styles.home_icon_container}>
-                <Ionicons name='menu-outline' size={30} color={'white'} />
-                </TouchableOpacity>
-                <View style={styles.home_search_container}>
-                    <TextInput style={styles.home_search_bar}/>
-                    <View style={styles.search_icon}>
-                        <Icon name='search1' size={25} color={'white'}/>
-                    </View>
-                </View>
-            </View>
+            
             <View style={styles.home_middle_container}>
                 <View style={styles.home_category_container}>
                 <TouchableOpacity
                 onPress={() => filterByType('cats')}
                 style={styles.home_category_pick}>
-                    <Image source={require('../assets/cat.png')} resizeMode='contain' style={styles.category_image}/>
+                    <Image source={require('../assets/cat.png')} resizeMode='contain' style={styles.category_image} />
                 </TouchableOpacity>
                 </View>
                 <View style={styles.home_category_container}>
                 <TouchableOpacity
-                onPress={() => getAll()}
+                onPress={() => filterByType('all')}
                 style={styles.home_category_pick}>
                     <Image source={require('../assets/pets.png')} resizeMode='contain' style={styles.category_image}/>
                 </TouchableOpacity>
@@ -117,7 +111,7 @@ async function filterByType (type) {
             renderItem={renderItem}
             numColumns={2}
             horizontal={false}
-            keyExtractor={(item) => item.name}
+            keyExtractor={(item) => item._id}
             />
             </View>
         </View>

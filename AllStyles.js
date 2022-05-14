@@ -1,6 +1,5 @@
 import React from "react";
 import { StyleSheet, Dimensions } from "react-native";
-import { Colors } from "react-native/Libraries/NewAppScreen";
 import { COLORS } from "./assets/colors";
 
 const {width: WIDTH, height: HEIGHT} = Dimensions.get('window')
@@ -9,7 +8,7 @@ const styles = StyleSheet.create ({
         flex:1,
         alignItems:'center',
         justifyContent:'center',
-        backgroundColor:COLORS.background
+        backgroundColor:COLORS.bej
     },
     auth_logo: {
         width: 300,
@@ -33,13 +32,13 @@ const styles = StyleSheet.create ({
     sign_up: {
         width: 0.7*WIDTH,
         height: 50,
-        backgroundColor:COLORS.darkGreen,
+        backgroundColor:COLORS.dark,
         borderRadius:10,
         justifyContent:'center'
     },
     sing_up_text: {
         color:'white',
-        fontSize:15,
+        fontSize:17,
         textAlign:'center'
     },
     sign_in: {
@@ -47,13 +46,13 @@ const styles = StyleSheet.create ({
         height: 50,
         backgroundColor:'transparent',
         borderWidth:3,
-        borderColor:COLORS.darkGreen,
+        borderColor:COLORS.dark,
         borderRadius:10,
         justifyContent:'center'
     },
     sign_in_text:{
-        color:COLORS.darkGreen,
-        fontSize:15,
+        color:COLORS.dark,
+        fontSize:17,
         textAlign:'center',
         fontWeight:'bold'
     },
@@ -63,7 +62,7 @@ const styles = StyleSheet.create ({
     },
     signUp_bottom_container:{
         flex:4,
-        backgroundColor:COLORS.background,
+        backgroundColor:COLORS.bej,
         width:WIDTH,
         borderTopLeftRadius:50,
         borderTopRightRadius:50,
@@ -81,18 +80,18 @@ const styles = StyleSheet.create ({
         left:30,
         width:0.8*WIDTH-40,
         fontSize:20,
-        color:COLORS.superDarkGreen
+        color:COLORS.dark
     },
     signUp_textinput_container: {
         borderWidth:3,
         borderRadius:10,
-        borderColor:COLORS.darkGreen,
+        borderColor:COLORS.dark,
         width: 0.8*WIDTH,
         height: 0.08*HEIGHT,
         justifyContent:'center',
     },
     signUp_textinput_text:{
-        backgroundColor:COLORS.background,
+        backgroundColor:COLORS.bej,
         color:COLORS.darkGreen,
         position:'absolute',
         zIndex:3,
@@ -111,7 +110,7 @@ const styles = StyleSheet.create ({
         borderRadius:10,
         width: 0.8*WIDTH,
         height: 0.08*HEIGHT,
-        backgroundColor:COLORS.darkGreen,
+        backgroundColor:COLORS.dark,
         justifyContent:'center'
     },
     passwordIcon_container:{
@@ -146,13 +145,14 @@ const styles = StyleSheet.create ({
     signIn_bottom_container:{
         flex:1.3,
         width:WIDTH,
-        backgroundColor:COLORS.background,
+        backgroundColor:COLORS.bej,
         borderTopLeftRadius: 50,
         borderTopRightRadius:50
     },
     home:{
         flex:1,
-        backgroundColor:COLORS.homeBackground
+        backgroundColor:COLORS.bej,
+        paddingTop:15
     },
     home_top_container:{
         flex:1,
@@ -211,7 +211,7 @@ const styles = StyleSheet.create ({
         alignItems:'center',
     },
     home_category_pick: {
-        backgroundColor: COLORS.darkGreen,
+        backgroundColor: COLORS.dark,
         width: '45%',
         height: '100%',
         borderRadius: 10,
@@ -220,23 +220,27 @@ const styles = StyleSheet.create ({
     },
     category_image:{
        height:'100%',
-       flex:1
+       flex:1,
+       tintColor:'white'
     },
     item_container:{
-        height: 0.3*HEIGHT,
-        width:0.35*WIDTH,
-        backgroundColor:'white',
+        height: 0.32*HEIGHT,
+        width:160,
+        backgroundColor:COLORS.dark,
         margin: 20,
-        borderRadius: 25
+        borderRadius: 25,
+        paddingHorizontal: 10,
+        
     },
     item_image_container:{
-        flex:2,
+        flex:1.6,
         alignItems:'center',
+        paddingTop: 10,
     },
     item_image:{
-        width:0.3*WIDTH,
-       height:'100%',
-       borderRadius: 50
+        width:'100%',
+       height:'80%',
+       borderRadius: 20
     },
     item_text_container:{
         flex:1,
@@ -244,7 +248,7 @@ const styles = StyleSheet.create ({
     },
     drawer_main_bg:{
         flex:1,
-        backgroundColor:COLORS.drawerBg
+        backgroundColor:COLORS.bej
     },
     drawer_top_container:{
         height:0.3*HEIGHT,
@@ -317,7 +321,8 @@ const styles = StyleSheet.create ({
     },
     post_category_text:{
         left:10,
-        fontSize:15
+        fontSize:18,
+        color: COLORS.dark
     },
     post_text_container:{
         flex:2.4,
@@ -335,7 +340,7 @@ const styles = StyleSheet.create ({
     },
     post_create_button:{
         width:0.4*WIDTH,
-        backgroundColor:COLORS.superDarkGreen,
+        backgroundColor:COLORS.dark,
         height:'100%',
         alignItems:'center',
         justifyContent:'center',
@@ -353,12 +358,11 @@ const styles = StyleSheet.create ({
         borderRadius:20,
         justifyContent:'center',
         alignItems:'center',
-        borderWidth: 3,
-        borderColor: '#538d22'
+        backgroundColor: COLORS.dark
     },
     post_buttons_text:{
         fontSize:20,
-        color:'#538d22'
+        color:COLORS.bej
     },
     post_category_textinput:{
         width:'60%',
@@ -385,7 +389,7 @@ const styles = StyleSheet.create ({
     },
     create_post_background:{
         flex:1,
-        backgroundColor:COLORS.homeBackground
+        backgroundColor:COLORS.bej
     },
     post_top_buttons:{
         width:0.15*WIDTH,
@@ -399,6 +403,31 @@ const styles = StyleSheet.create ({
     pick_category_image:{
         flex:1,
         height:'80%'
+    },
+    loader: {
+        position:'absolute', 
+        justifyContent:'center', 
+        alignItems: 'center',
+        top: 0, 
+        left: 0, 
+        right: 0, 
+        bottom: 0, 
+      },
+    modalBackground:{
+        flex:1,
+        backgroundColor:'transparent',
+        justifyContent:'center',
+        alignItems:'center'
+    },
+    modalContainer:{
+        width:0.7*WIDTH,
+        height:0.4*HEIGHT,
+        backgroundColor: COLORS.bej,
+        borderRadius: 40,
+        borderColor: COLORS.dark,
+        borderWidth: 2,
+        justifyContent:'center',
+        alignItems:'center'
     }
     
 })

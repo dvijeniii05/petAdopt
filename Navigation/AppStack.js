@@ -5,6 +5,8 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import AuthScreen from '../Screens/authScreen';
+import SignInScreen from '../Screens/signInScreen';
+import SignUpScreen from '../Screens/signUpScreen';
 import DrawerContent from './drawerContent';
 import BottomTab from './bottomTab';
 import PostView from '../Screens/postView'
@@ -18,8 +20,10 @@ function AppStack() {
     <Stack.Navigator screenOptions={{
       headerShown: false
     }}>
+      <Stack.Screen name='Auth' component={AuthScreen}/>
+      <Stack.Screen name='SignUpScreen' component={SignUpScreen}/>
+      <Stack.Screen name='SignInScreen' component={SignInScreen}/>
       <Stack.Screen name='AppTab' component={BottomTab}/>
-      <Stack.Screen name='SignIn' component={AuthScreen}/>
       <Stack.Screen name='PostView' component={PostView}/>
     </Stack.Navigator>
   )

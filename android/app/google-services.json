@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "381420941552",
+    "project_id": "petadopt-63beb",
+    "storage_bucket": "petadopt-63beb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:381420941552:android:192b5512ade16d9bb99235",
+        "android_client_info": {
+          "package_name": "com.dvijeniii05.petadopt"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "381420941552-8ejadbpb0oiso7pgfui1ukvnl7dedibq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgooutQAtGKdd96LyuzKDqcKYoJ6wxqt8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "381420941552-8ejadbpb0oiso7pgfui1ukvnl7dedibq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

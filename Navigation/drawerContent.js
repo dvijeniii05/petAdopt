@@ -10,6 +10,7 @@ import {
 } from '@react-navigation/drawer'
 import { styles } from '../AllStyles'
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import { COLORS } from '../assets/colors'
 
 function DrawerContent (props) {
     return(
@@ -24,33 +25,33 @@ function DrawerContent (props) {
             <View>
             <DrawerItem 
             label='Главная'
-            icon={() => <AntDesign name='home' size={22}/>}
+            icon={() => <AntDesign name='home' size={22} color={COLORS.dark}/>}
             onPress={() => props.navigation.navigate('Home')}
-            activeTintColor='green'
-            activeBackgroundColor='blue'
+            labelStyle={{color:COLORS.dark, fontSize:15}}
             />
             <DrawerItem 
             label='Профиль'
-            icon={() => <AntDesign name='user' size={22}/>}
+            icon={() => <AntDesign name='user' size={22} color={COLORS.dark}/>}
             onPress={() => props.navigation.navigate('DirectScreen')}
-            activeTintColor='green'
-            activeBackgroundColor='blue'
+            labelStyle={{color:COLORS.dark, fontSize:15}}
             />
             <DrawerItem 
             label='Сообщения'
-            icon={() => <AntDesign name='mail' size={22}/>}
+            icon={() => <AntDesign name='mail' size={22} color={COLORS.dark}/>}
             onPress={() => props.navigation.navigate('ProfileScreen')}
+            labelStyle={{color:COLORS.dark, fontSize:15}}
             />
             <DrawerItem 
             label='Уведомления'
-            icon={() => <AntDesign name='notification' size={22}/>}
+            icon={() => <AntDesign name='notification' size={22} color={COLORS.dark}/>}
             onPress={() => props.navigation.navigate('NotificationsScreen')}
+            labelStyle={{color:COLORS.dark, fontSize:15}}
             />
             </View>
         </DrawerContentScrollView>
         <View style={styles.drawer_bottom_container}>
-        <AntDesign name='setting' size={30} color='black'/>
-        <AntDesign name='logout' size={28} color='black'/>
+        <AntDesign name='setting' size={30} color={COLORS.dark}/>
+        <AntDesign name='logout' size={28} color={COLORS.dark}/>
         </View>
         </View>
     )
