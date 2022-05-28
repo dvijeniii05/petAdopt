@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "petAdopt.app"
-               BlueprintName = "petAdopt"
-               ReferencedContainer = "container:petAdopt.xcodeproj">
+               BuildableName = "petme.app"
+               BlueprintName = "petme"
+               ReferencedContainer = "container:petme.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "petAdoptTests.xctest"
-               BlueprintName = "petAdoptTests"
-               ReferencedContainer = "container:petAdopt.xcodeproj">
+               BuildableName = "petmeTests.xctest"
+               BlueprintName = "petmeTests"
+               ReferencedContainer = "container:petme.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "petAdopt.app"
-            BlueprintName = "petAdopt"
-            ReferencedContainer = "container:petAdopt.xcodeproj">
+            BuildableName = "petme.app"
+            BlueprintName = "petme"
+            ReferencedContainer = "container:petme.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "petAdopt.app"
-            BlueprintName = "petAdopt"
-            ReferencedContainer = "container:petAdopt.xcodeproj">
+            BuildableName = "petme.app"
+            BlueprintName = "petme"
+            ReferencedContainer = "container:petme.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

@@ -11,14 +11,27 @@ import {
 import { styles } from '../AllStyles'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { COLORS } from '../assets/colors'
+import { useRecoilState } from 'recoil'
+import { avatarAtom } from '../atoms/avatarAtom'
+import { realnameAtom } from '../atoms/realnameAtom';
+import { Avatars } from '../assets/avatars'
 
 function DrawerContent (props) {
+const [avatar, setAvatar] = useRecoilState(avatarAtom)
+const [realname, setRealname] = useRecoilState(realnameAtom)
+
+const avatarSelector = picker => {
+    return Avatars[picker]
+}
+
     return(
         <View style={styles.drawer_main_bg}>
             <View style={styles.drawer_top_container}>
-                <Image source={require('../assets/drawerImg.jpg')} resizeMode='contain' style={{height:100, width:100}}/>
+                <View style={styles.avatar_container}>
+                    <Image source={avatarSelector(avatar)} resizeMode='contain' style={{height:110, width:110}}/>
+                </View>
                 <View style={{paddingTop:20}}>
-                    <Text>Элариз Нардаранский</Text>
+                        <Text style={{color:'black'}}>{realname}</Text>
                 </View>
             </View>
         <DrawerContentScrollView {...props} contentContainerStyle={styles.contentContainerStyle}>
@@ -30,21 +43,21 @@ function DrawerContent (props) {
             labelStyle={{color:COLORS.dark, fontSize:15}}
             />
             <DrawerItem 
-            label='Профиль'
+            label='Мои посты'
             icon={() => <AntDesign name='user' size={22} color={COLORS.dark}/>}
             onPress={() => props.navigation.navigate('DirectScreen')}
             labelStyle={{color:COLORS.dark, fontSize:15}}
             />
             <DrawerItem 
-            label='Сообщения'
-            icon={() => <AntDesign name='mail' size={22} color={COLORS.dark}/>}
+            label='Фавориты'
+            icon={() => <AntDesign name='hearto' size={22} color={COLORS.dark}/>}
             onPress={() => props.navigation.navigate('ProfileScreen')}
             labelStyle={{color:COLORS.dark, fontSize:15}}
             />
             <DrawerItem 
             label='Уведомления'
             icon={() => <AntDesign name='notification' size={22} color={COLORS.dark}/>}
-            onPress={() => props.navigation.navigate('NotificationsScreen')}
+            onPress={() => props.navigation.navigate('Forum')}
             labelStyle={{color:COLORS.dark, fontSize:15}}
             />
             </View>

@@ -8,7 +8,9 @@ import {
     Image,
     FlatList,
     Dimensions,
-    ActivityIndicator
+    ActivityIndicator,
+    KeyboardAvoidingView,
+    StatusBar
 } from 'react-native'
 import { styles } from '../AllStyles'
 import DropDownPicker from 'react-native-dropdown-picker'
@@ -22,10 +24,16 @@ import { v4 as uuidv4 } from 'uuid';
 import storage from '@react-native-firebase/storage';
 import {ALL_POSTS} from '@env'
 import { COLORS } from '../assets/colors'
+import FocusAwareStatusBar from '../Components/FocusAwareStatusBar'
+import { numberAtom } from '../atoms/numberAtom'
+import { useRecoilState } from 'recoil'
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 const {width: WIDTH, height: HEIGHT} = Dimensions.get('window')
 
 function CreatePost({navigation}) {
+    const [number, setNumber] = useRecoilState(numberAtom)
     const[typeOpen, setTypeOpen] =useState(false)
     const[genderOpen, setGenderOpen] = useState(false)
     const[ageOpen, setAgeOpen] = useState(false)
@@ -115,6 +123,8 @@ function CreatePost({navigation}) {
         label:'нет',
         value:'Не привит'
     }]
+
+    const tabBarHeight = useBottomTabBarHeight()
     
     async function getImages() {
 
@@ -123,6 +133,7 @@ function CreatePost({navigation}) {
     }
 
     async function sendPost() {
+        console.log(tabBarHeight, StatusBar.currentHeight)
         
         const jwt = await AsyncStorage.getItem('jwt')
         console.log(jwt)
@@ -137,7 +148,8 @@ function CreatePost({navigation}) {
             stiril: stirilValue,
             jab: jabValue,
             description: desc,
-            urls: await sendImage()
+            urls: await sendImage(),
+            mobile: number
         }, {
             headers: {
                 'auth-token' : jwt
@@ -186,6 +198,7 @@ function CreatePost({navigation}) {
 
     return(
         <View style={[styles.create_post_background, loading && {opacity: 0.2}]}>
+            <FocusAwareStatusBar backgroundColor={COLORS.bej} barStyle='dark-content'/>
             <View style={styles.loader}>
             <ActivityIndicator
             animating={loading}
@@ -193,19 +206,28 @@ function CreatePost({navigation}) {
             color='#4B4F40'
             />
             </View>
-            <View style={styles.post_middle_container}>
-                <View style={[styles.post_image_container, {marginBottom:10}]}>
+            <KeyboardAwareScrollView
+            keyboardShouldPersistTaps='always' 
+            behavior={Platform.OS === 'ios' ? 'padding' : null}
+            style={{flex:1}}>
+            
+            <View style={[styles.post_middle_container, {height: HEIGHT-tabBarHeight-StatusBar.currentHeight}]}>
+                <View style={[styles.post_create_image_container, {marginBottom:10}]}>
                     <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
-                    {images.length !== 2  &&
+                    {images === undefined || images.length !== 2  ?
                     <TouchableOpacity 
                     style={styles.add_pic_button}
                     onPress={()=> getImages()}
                     >
                         <AntIcon name='plussquareo' size={50} color={COLORS.dark}/>
-                    </TouchableOpacity>
+                    </TouchableOpacity> :
+                    <TouchableOpacity 
+                    style={styles.add_pic_button}
+                    >
+                    </TouchableOpacity> 
                      }
                     
-                    {images.length !== 2 ?
+                    {images === undefined || images.length !== 2 ?
                     <Text style={{fontSize:20, top:10, color:COLORS.dark}}>Добавить 2 фотографии</Text> : <Text style={{fontSize:20, top:10}}>Фотографии добавлены</Text>
                     }
                     </View>
@@ -331,6 +353,8 @@ function CreatePost({navigation}) {
             </View>
             </View>
             </View>
+            
+            </KeyboardAwareScrollView>
         </View>
     )
 }

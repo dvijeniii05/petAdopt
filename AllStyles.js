@@ -1,11 +1,19 @@
 import React from "react";
+import {StatusBar} from 'react-native'
 import { StyleSheet, Dimensions } from "react-native";
 import { COLORS } from "./assets/colors";
 
+
 const {width: WIDTH, height: HEIGHT} = Dimensions.get('window')
+
+function heighInclStatBar () {
+    return HEIGHT-StatusBar.currentHeight
+}
+
 const styles = StyleSheet.create ({
     background_container: {
-        flex:1,
+        height:heighInclStatBar(),
+        width:WIDTH,
         alignItems:'center',
         justifyContent:'center',
         backgroundColor:COLORS.bej
@@ -22,7 +30,8 @@ const styles = StyleSheet.create ({
     },
     auth_text_container: {
         flex:0.8,
-        width:WIDTH
+        width:WIDTH,
+        paddingHorizontal:10
     },
     auth_buttons_container: {
         flex:1.2,
@@ -58,7 +67,17 @@ const styles = StyleSheet.create ({
     },
     signUp_top_container:{
         flex:1,
-        width:300
+        flexDirection:'row'
+    },
+    signUp_text_container:{
+        flex:7,
+        width:300,
+        alignItems:'center'
+    },
+    signUp_avatart_container:{
+        flex:3,
+        justifyContent:'center',
+        alignItems:'center'
     },
     signUp_bottom_container:{
         flex:4,
@@ -136,7 +155,8 @@ const styles = StyleSheet.create ({
     signIn_top_image:{
        width:0.3*WIDTH,
        height:'100%',
-       right:0.1*WIDTH
+       right:0.1*WIDTH,
+       borderRadius:50
     },
     signIn_top_image2:{
         width:0.4*WIDTH,
@@ -152,7 +172,6 @@ const styles = StyleSheet.create ({
     home:{
         flex:1,
         backgroundColor:COLORS.bej,
-        paddingTop:15
     },
     home_top_container:{
         flex:1,
@@ -200,7 +219,7 @@ const styles = StyleSheet.create ({
         left:20,
     },
     home_middle_container:{
-        flex:0.6,
+        flex:0.8,
         width:WIDTH,
         flexDirection: 'row',
         alignItems:'center',
@@ -209,6 +228,7 @@ const styles = StyleSheet.create ({
     home_category_container:{
         width:0.35*WIDTH,
         alignItems:'center',
+        marginVertical:8
     },
     home_category_pick: {
         backgroundColor: COLORS.dark,
@@ -229,22 +249,21 @@ const styles = StyleSheet.create ({
         backgroundColor:COLORS.dark,
         margin: 20,
         borderRadius: 25,
-        paddingHorizontal: 10,
+        overflow: 'hidden'
         
     },
     item_image_container:{
         flex:1.6,
         alignItems:'center',
-        paddingTop: 10,
     },
     item_image:{
         width:'100%',
-       height:'80%',
-       borderRadius: 20
+       height:'100%',
     },
     item_text_container:{
         flex:1,
-        paddingHorizontal:0.03*WIDTH
+        paddingHorizontal:0.03*WIDTH,
+        justifyContent:'center'
     },
     drawer_main_bg:{
         flex:1,
@@ -268,12 +287,21 @@ const styles = StyleSheet.create ({
         justifyContent:'center',
         paddingLeft:10,
     },
+    post_create_middle_container:{
+        width:WIDTH,
+        height:HEIGHT,
+    },
     post_middle_container:{
         flex:1,
-        width:WIDTH
+    },
+    post_create_image_container:{
+        flex:1.5,
+        width: WIDTH,
+        alignItems:'center',
+        justifyContent:'center',
     },
     post_image_container:{
-        flex:1.5,
+        flex:1,
         width:WIDTH,
         alignItems:'center',
         justifyContent:'center',
@@ -341,7 +369,7 @@ const styles = StyleSheet.create ({
     post_create_button:{
         width:0.4*WIDTH,
         backgroundColor:COLORS.dark,
-        height:'100%',
+        height:40,
         alignItems:'center',
         justifyContent:'center',
         borderRadius:20
@@ -351,6 +379,15 @@ const styles = StyleSheet.create ({
         justifyContent:'center',
         padding:5,
         alignItems:'center',
+        flexDirection:'row'
+    },
+    post_like_button:{
+        position:'absolute',
+        right:20,
+        height:'100%',
+        width:50,
+        justifyContent:'center',
+        alignItems: 'center',
     },
     post_buttons:{
         width:0.5*WIDTH,
@@ -362,7 +399,7 @@ const styles = StyleSheet.create ({
     },
     post_buttons_text:{
         fontSize:20,
-        color:COLORS.bej
+        color:COLORS.bej,
     },
     post_category_textinput:{
         width:'60%',
@@ -428,7 +465,88 @@ const styles = StyleSheet.create ({
         borderWidth: 2,
         justifyContent:'center',
         alignItems:'center'
-    }
+    },
+    avatar_pick_main_container:{
+        width: WIDTH,
+        height: HEIGHT,
+        alignItems:'center',
+    },
+    avatar_text:{
+        flex:1,
+        fontSize:25,
+        color: COLORS.dark,
+        textAlignVertical:'center'
+    },
+    avatar_inner_container:{
+        flex:9,
+        alignItems:'center'
+    },
+    avatar_flatlist_container:{
+        justifyContent:'center',
+        alignItems:'center',
+        backgroundColor:COLORS.blue,
+        margin:20,
+        borderRadius:20
+    },
+    avatar_container:{
+        height:100,
+        width:100,
+        justifyContent:'center',
+        alignItems:'center',
+        backgroundColor:COLORS.blue,
+        borderRadius:30
+    },
+      internet_modal_bg:{
+        flex:1,
+        backgroundColor:'transparent',
+        justifyContent:'flex-end',
+        alignItems:'center'
+          
+      },
+      internet_modal_container:{
+          width:WIDTH,
+          height:170,
+          backgroundColor:'white',
+          paddingVertical:10
+      },
+      internet_text_container:{
+        flex:1.5,
+      },
+      internet_title:{
+        flex:1,
+        textAlign:'center',
+        textAlignVertical:'center',
+        fontSize:20,
+        color: COLORS.dark,
+        fontWeight:'bold'
+      },
+      internet_text:{
+        flex:2,
+        textAlign:'center',
+        textAlignVertical:'center',
+        fontSize:15,
+        
+        color: COLORS.dark,
+      },
+      internet_button_container:{
+          flex:1,
+          justifyContent:'center',
+          alignItems:'center'
+      },
+      internet_button:{
+          width: '85%',
+          height: '85%',
+          backgroundColor:COLORS.dark,
+          borderRadius:10
+      },
+      internet_button_text:{
+          flex:1,
+          textAlign:'center',
+          textAlignVertical:'center',
+          fontSize:20,
+          color:'white'
+      }
+
     
 })
 

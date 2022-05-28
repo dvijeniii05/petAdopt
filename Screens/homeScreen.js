@@ -7,13 +7,15 @@ import {
     TouchableWithoutFeedback,
     TextInput,
     FlatList,
-    LogBox
+    LogBox,
+    BackHandler
 } from 'react-native'
 import { styles } from '../AllStyles'
 import axios from 'axios'
 import {ALL_POSTS, HOST} from '@env'
 import { useFocusEffect } from '@react-navigation/native'
 import { COLORS } from '../assets/colors'
+import FocusAwareStatusBar from '../Components/FocusAwareStatusBar'
 
 LogBox.ignoreLogs(['Encountered two children with the same key, ...'])
 
@@ -34,7 +36,7 @@ useFocusEffect(
         async function getAll() {
             try{
                 const allData = await axios.get(`${ALL_POSTS}`)
-                console.log(allData.data)
+                
                 setData(allData.data)
             } catch(err) {
                 console.log(err)
@@ -46,10 +48,15 @@ useFocusEffect(
     }, [])
 )
 
+/* useEffect(() => {   //ADD THIS ONCE FINISHED WITH APP TO PREVENT GOING BACK FROM HOME SCREEN!!!
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => true)
+    return () => backHandler.remove()
+}, []) */   
+
 async function filterByType (type) {
     try {
         const filteredCats = await axios.get(`${ALL_POSTS}${type}`)
-        console.log(filteredCats.data)
+        
         setData(filteredCats.data)
     } catch(err) {
         console.log(err)
@@ -81,7 +88,7 @@ async function filterByType (type) {
         <HideKeyboard>
         <View style={{flex:1}}>
         <View style={styles.home}>
-            
+        <FocusAwareStatusBar backgroundColor={COLORS.bej} barStyle='dark-content'/>
             <View style={styles.home_middle_container}>
                 <View style={styles.home_category_container}>
                 <TouchableOpacity

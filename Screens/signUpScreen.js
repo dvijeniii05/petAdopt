@@ -6,15 +6,24 @@ import {
     TouchableOpacity,
     TouchableWithoutFeedback,
     Keyboard,
-    KeyboardAvoidingView,
-    Platform
+    Platform,
+    Image,
+    ActivityIndicator
 } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from '../AllStyles'
 import { COLORS } from '../assets/colors'
+import FocusAwareStatusBar from '../Components/FocusAwareStatusBar'
 import Icon from 'react-native-vector-icons/Entypo'
 import {SIGN_UP, ALL_POSTS} from '@env'
 import axios from 'axios'
+import { useRecoilState } from 'recoil'
+import { avatarAtom } from '../atoms/avatarAtom';
+import { realnameAtom } from '../atoms/realnameAtom';
+import { numberAtom } from '../atoms/numberAtom';
+import { emailAtom } from '../atoms/emailAtom';
+import IntlPhoneField from 'react-native-intl-phone-field'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const HideKeyboard = ({ children }) => (
     <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
@@ -22,12 +31,20 @@ const HideKeyboard = ({ children }) => (
     </TouchableWithoutFeedback>
   );
 
-function SignUpScreen ({navigation}) {
+function SignUpScreen ({route, navigation}) {
+    const [loading, setLoading] = useState(false)
+    const [avatar, setAvatar] = useRecoilState(avatarAtom)
+    const [realname, setRealname] = useRecoilState(realnameAtom)
+    const [number, setNumber] = useRecoilState(numberAtom)
+    const [emailUser, setEmailUser] = useRecoilState(emailAtom)
     const [securePass, setSecurePass] = useState(true)
     const [eyeState, setEyeState] = useState('eye-with-line')
     const [username, setUsername] = useState(null)
     const [email, setEmail] = useState(null)
     const [password, setPassword] = useState(null)
+    const [mobile, setMobile] = useState(null)
+    const [mobValid, setMobValid] = useState(false)
+    const {url, id} = route.params
 
     function passwordState() {
         setSecurePass(!securePass)
@@ -36,9 +53,10 @@ function SignUpScreen ({navigation}) {
 
     function validation() {
         console.log(username, email, password)
-        if(username && email && password) {
+        if(username && email && password && mobValid) {
             sendDetails()
         } else {
+            setLoading(false)
             alert('Вы оставили одно или несколько из полей пустыми')
         }
     }
@@ -48,29 +66,55 @@ function SignUpScreen ({navigation}) {
             const result = await axios.post(`${SIGN_UP}`, {
                 username: username,
                 email: email,
-                password: password
+                password: password,
+                mobile: mobile,
+                avatar: id
             })
             console.log(result.data)
             const token = AsyncStorage.setItem('jwt', result.data)
+            setAvatar(url)
+            setRealname(username)
+            setNumber(mobile)
+            setEmailUser(email)
             console.log(token)
-            navigation.navigate('AppTab')
+            setLoading(false)
+            navigation.navigate('Drawer', {Screen: 'AppTab'})
         } catch(error) {
+            setLoading(false)
             alert(error.response.data)
         }
     }
 
     return(
         <HideKeyboard>
-            <KeyboardAvoidingView 
-            behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
+            <KeyboardAwareScrollView
+            keyboardShouldPersistTaps='always' 
+            behavior={Platform.OS === 'ios' ? 'padding' : null}
             style={{flex:1}}>
-            <View  style={[styles.background_container, {backgroundColor:COLORS.dark}]}>
-            <View style={styles.signUp_top_container}>
-                <View style={{flex:1, alignItems:'flex-start', justifyContent:'flex-end',}}>
-                <Text style={{fontSize: 30, color:'white' }}>Регистрация</Text>
-                </View>
-                <Text style={{flex:0.8, color:'white', fontSize:15}}>Давайте создадим Вам аккаунт</Text>
+            <FocusAwareStatusBar backgroundColor={COLORS.dark} barStyle='light-content'/>
+            <View style={styles.loader}>
+            <ActivityIndicator
+            animating={loading}
+            size='large'
+            color='#4B4F40'
+            />
             </View>
+            <View  style={[styles.background_container, {backgroundColor:COLORS.dark}]}>
+                <View style={styles.signUp_top_container}>
+                    <View style={styles.signUp_text_container}>
+                        <View style={{flex:1, alignItems:'flex-start', justifyContent:'flex-end'}}>
+                            <Text style={{fontSize: 30, color:'white' }}>Регистрация</Text>
+                        </View>
+                        <Text style={{flex:0.8, color:'white', fontSize:15}}>Давайте создадим Вам аккаунт</Text>
+                    </View>
+                    <View style={styles.signUp_avatart_container}>
+                        <Image source={url} style={{
+                            width:100,
+                            height:100,
+                            resizeMode: 'cover',
+                        }}/>
+                    </View>
+                </View>
             <View style={styles.signUp_bottom_container}>
                 <View style={{flex:0.15}}></View>
                 <View style={styles.signUp_allTextinputs_container}>
@@ -97,17 +141,35 @@ function SignUpScreen ({navigation}) {
                 <Text style={[styles.signUp_textinput_text, {width:60}]}>Пароль</Text>
                 </View>
 
+                <View style={[styles.signUp_textinput_container, {overflow:'hidden'}]}>
+                <IntlPhoneField
+                onEndEditing={(result) => console.log(result)}
+                onValidation={(isValid) => setMobValid(isValid)}
+                onValueUpdate={(value) => {
+                    setMobile(value)
+                }}
+                defaultCountry="AZ"
+                defaultPrefix="+994"
+                defaultFlag="🇦🇿"
+                containerStyle={{ paddingHorizontal:20}}
+                textInputStyle={{fontSize:20, textAlign:'center'}}
+                />
+                </View>
+
                 </View>
                 <View style={styles.signUp_button_container}>
                     <TouchableOpacity 
                     style={styles.signUp_button}
-                    onPress={() => validation()}>
+                    onPress={() => {
+                        setLoading(true)
+                        validation()
+                    }}>
                         <Text style={{textAlign:'center', fontSize:17, color:'white'}}>Зарегистрироваться</Text>
                     </TouchableOpacity>
                 </View>
             </View>
             </View>
-            </KeyboardAvoidingView>
+            </KeyboardAwareScrollView>
         </HideKeyboard>
     )
 }

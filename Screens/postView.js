@@ -5,15 +5,18 @@ import {
     Image,
     Dimensions,
     ScrollView,
-    TouchableOpacity
+    TouchableOpacity,
+    Pressable
 } from 'react-native'
 import { styles } from '../AllStyles'
 import ModalPopUp from '../Components/modalPopUp'
 import MatIcon from 'react-native-vector-icons/MaterialIcons'
 import Octicon from 'react-native-vector-icons/Octicons'
+import AntDesign from 'react-native-vector-icons/AntDesign'
 import Icon from 'react-native-vector-icons/Entypo'
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import { COLORS } from '../assets/colors'
+import FocusAwareStatusBar from '../Components/FocusAwareStatusBar'
 import axios from 'axios'
 import {ALL_POSTS} from '@env'
 
@@ -30,11 +33,14 @@ function CarouselItem ({item, index}) {
 }
 function PostView({route, navigation}) {
     const ref = useRef(null)
+    const [mobile, setMobile] = useState(null)
     const [data, setData] = useState([])
     const [imgArray, setImgArray] = useState(null)
     const {id} = route.params
 
     const [visible, setVisible] = useState(false)
+    const [liked, setLiked] = useState(false)
+    const [likeIcon, setLikeIcon] = useState('hearto')
 
     useEffect(()=> {
         async function getData() {
@@ -42,7 +48,10 @@ function PostView({route, navigation}) {
                 let urls = []
                 const allData = await axios.get(`${ALL_POSTS}`+id)
                 const resultUrls = allData.data.urls
+                const resultMobile = allData.data.mobile
                 console.log(allData.data)
+                console.log(resultMobile)
+                setMobile(resultMobile)
                 setData(allData.data)
                 if(resultUrls) {
                     for(i = 0; i < resultUrls.length; i++) {
@@ -50,6 +59,7 @@ function PostView({route, navigation}) {
                     }
                 }
                 setImgArray(urls)
+                const getNumb = await axios.get()
                 console.log(imgArray)
             } catch(err) {
                 console.log(err)
@@ -61,7 +71,8 @@ function PostView({route, navigation}) {
  
 return(
     <View style={[{flex:1, backgroundColor:COLORS.bej}, visible && {opacity:0.5}]}>
-        <ModalPopUp visible={visible}>
+        <FocusAwareStatusBar backgroundColor={COLORS.bej} barStyle='dark-content'/>
+        <ModalPopUp visible={visible} number={mobile}>
             <TouchableOpacity onPress={() => setVisible(false)} style={{ width: 40, height: 40, justifyContent:'center', alignItems:'center'}}>
             <Icon name='cross' size={30} color={COLORS.dark}/>
             </TouchableOpacity>
@@ -129,9 +140,13 @@ return(
         </View>
         </View>
         <View style={styles.post_bottom_container}>
+            
             <TouchableOpacity style={styles.post_buttons} onPress={() => setVisible(true)}>
                 <Text style={styles.post_buttons_text}>Забрать домой!</Text>
             </TouchableOpacity>
+            <Pressable style={styles.post_like_button} onPress={()=> setLiked(!liked)}>
+                <AntDesign name={liked? 'heart' : 'hearto'} color={'red'}  size={35}/>
+            </Pressable>
         </View>
     </View>
 )

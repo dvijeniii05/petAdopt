@@ -11,7 +11,7 @@ import {
 import {styles} from '../AllStyles'
 import { COLORS } from '../assets/colors'
 
-export default function ModalPopUp ({visible, children, number}) {
+export default function ModalPopUp ({visible, number, children}) {
     const[show, setShow] = useState(false)
     useEffect(() => {
         toggleModal()
@@ -36,7 +36,7 @@ export default function ModalPopUp ({visible, children, number}) {
                 </View>
                 <View style={{flex:2, width:'100%', justifyContent:'space-evenly', alignItems:'center'}}>
                     <TouchableOpacity 
-                    onPress={() => Linking.openURL(`https://t.me/+447598022428`)}
+                    onPress={() => Linking.openURL(`https://t.me/${number}`)}
                     style={{width:'70%', height:50, backgroundColor:'#0088cc',justifyContent:'center', flexDirection:'row', borderRadius:30, borderWidth:2, borderColor:COLORS.dark}}>
                         <View style={{flex:2, justifyContent:'center', paddingRight:15}}>
                             <Text style={{textAlign:'right', fontSize:19, color:'#181818', fontWeight:'600'}}>Telegram</Text>
@@ -46,7 +46,7 @@ export default function ModalPopUp ({visible, children, number}) {
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity 
-                    onPress={() => Linking.openURL(`https://wa.me/+447598022428`)}
+                    onPress={() => Linking.openURL(`https://wa.me/${number}`)}
                     style={{width:'70%', height:50, backgroundColor:'#6cc751',justifyContent:'center', flexDirection:'row', borderRadius:30,borderWidth:2, borderColor:COLORS.dark}}>
                         <View style={{flex:2, justifyContent:'center', paddingRight:15}}>
                             <Text style={{textAlign:'right', fontSize:19, color:'#181818', fontWeight:'600'}}>Whatsapp</Text>

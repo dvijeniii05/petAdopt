@@ -10,6 +10,7 @@ import DirectScreen from '../Screens/direct'
 import NotificationsScreen from '../Screens/notifications'
 import ProfileScreen from '../Screens/profile'
 import MessageCreator from '../Screens/messageCreator';
+import ForumScreen from '../Screens/forumScreen';
 
 const Tab = createBottomTabNavigator()
 
@@ -20,9 +21,10 @@ function BottomTab ({navigation}) {
             tabBarShowLabel:false,
             tabBarActiveTintColor: COLORS.blue,
             tabBarInactiveTintColor: COLORS.dark,
+            tabBarHideOnKeyboard: true,
             tabBarStyle:{
                 backgroundColor: COLORS.bej,
-                borderTopWidth: 0
+                borderTopWidth: 0,
             }
         }}>
             <Tab.Screen name='Home' component={HomeScreen} options={{
@@ -31,7 +33,7 @@ function BottomTab ({navigation}) {
             <Tab.Screen name='Create' component={CreatePost} options={{
                 tabBarIcon: ({color}) => <AntDesign name='plus' size={30} color={color}/>
             }}/>
-            <Tab.Screen name='Forum' component={SignInScreen} options={{
+            <Tab.Screen name='Forum' component={ForumScreen} options={{
                 tabBarIcon: ({color}) => <AntDesign name='notification' size={30} color={color}/>
             }}/>
             <Tab.Screen name='DirectScreen' component={DirectScreen} options={{tabBarItemStyle:{display:'none'}}}/>

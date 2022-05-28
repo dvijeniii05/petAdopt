@@ -1,15 +1,15 @@
 {
   "project_info": {
     "project_number": "381420941552",
-    "project_id": "petadopt-63beb",
-    "storage_bucket": "petadopt-63beb.appspot.com"
+    "project_id": "petme-63beb",
+    "storage_bucket": "petme-63beb.appspot.com"
   },
   "client": [
     {
       "client_info": {
         "mobilesdk_app_id": "1:381420941552:android:192b5512ade16d9bb99235",
         "android_client_info": {
-          "package_name": "com.dvijeniii05.petadopt"
+          "package_name": "com.dvijeniii05.petme"
         }
       },
       "oauth_client": [
