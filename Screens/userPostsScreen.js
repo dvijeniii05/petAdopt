@@ -10,39 +10,33 @@ import FocusAwareStatusBar from '../Components/FocusAwareStatusBar'
 import {styles} from '../AllStyles'
 import {COLORS} from '../assets/colors'
 import axios from 'axios'
-import {ALL_POSTS} from '@env'
+import {USER_POSTS} from '@env'
 import { useFocusEffect } from '@react-navigation/native'
-import { useRecoilState } from 'recoil'
+import {useRecoilState} from 'recoil'
 import { numberAtom } from '../atoms/numberAtom';
-import { likedAtom } from '../atoms/likedAtom'
 
-function ProfileScreen({navigation}) {
+function UserPosts({navigation}) {
 
-    const [data, setData] = useState()
+    const [data, setData] = useState(null)
     const [mobile, setMobile] = useRecoilState(numberAtom)
-    const [liked, setLiked] = useRecoilState(likedAtom)
 
     useFocusEffect(
         React.useCallback( () => {
     
             async function getAll() {
-                let allData = []
-                for(i = 0; i < liked.length; i++) {
-                    try{
-                    const getData = await axios.get(`${ALL_POSTS}`+`${liked[i]}`)
-                    allData.push(getData.data)
-                    } catch(err) {
-                        console.log(err)
-                    }
+                try{
+                    const allData = await axios.get(`${USER_POSTS}`+mobile)
+                    
+                    setData(allData.data)
+                } catch(err) {
+                    console.log(err)
                 }
-                console.log(liked)
-                console.log(allData)
-                setData(allData)
             }
     
             getAll()
+            console.log('TTUTUUT',data)
     
-        }, [liked])
+        }, [])
     )
 
     const renderItem = ({item}) => {
@@ -72,7 +66,7 @@ function ProfileScreen({navigation}) {
         <FocusAwareStatusBar backgroundColor={COLORS.bej} barStyle='dark-content'/>
             
             <View style={styles.home_bottom_container}>
-            {!liked[0] && <View style={{top:20}}><Text style={{fontSize:25, color:COLORS.darkGreen}}>Ваши Фавориты</Text></View>}
+            {data.message && <View style={{top:20}}><Text style={{fontSize:25, color:COLORS.darkGreen}}>Ваши Обьявления</Text></View>}
             <FlatList
             data={data}
             renderItem={renderItem}
@@ -86,4 +80,4 @@ function ProfileScreen({navigation}) {
     )
 }
 
-export default ProfileScreen
+export default UserPosts

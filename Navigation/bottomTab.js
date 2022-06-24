@@ -6,7 +6,7 @@ import SignInScreen from '../Screens/signInScreen';
 import SignUpScreen from '../Screens/signUpScreen';
 import {COLORS} from '../assets/colors'
 import AntDesign from 'react-native-vector-icons/AntDesign'
-import DirectScreen from '../Screens/direct'
+import UserPosts from '../Screens/userPostsScreen'
 import NotificationsScreen from '../Screens/notifications'
 import ProfileScreen from '../Screens/profile'
 import MessageCreator from '../Screens/messageCreator';
@@ -36,7 +36,7 @@ function BottomTab ({navigation}) {
             <Tab.Screen name='Forum' component={ForumScreen} options={{
                 tabBarIcon: ({color}) => <AntDesign name='notification' size={30} color={color}/>
             }}/>
-            <Tab.Screen name='DirectScreen' component={DirectScreen} options={{tabBarItemStyle:{display:'none'}}}/>
+            <Tab.Screen name='UserPosts' component={UserPosts} options={{tabBarItemStyle:{display:'none'}}}/>
             <Tab.Screen name='NotificationsScreen' component={NotificationsScreen} options={{tabBarItemStyle:{display:'none'}}}/>
             <Tab.Screen name='ProfileScreen' component={ProfileScreen} options={{tabBarItemStyle:{display:'none'}}}/>
             <Tab.Screen name='MessageCreator' component={MessageCreator} options={{tabBarItemStyle:{display:'none'}}}/>

@@ -13,12 +13,13 @@ import BottomTab from './bottomTab';
 import PostView from '../Screens/postView'
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import {GET_USER} from '@env'
+import {GET_USER, ADD_LIKED} from '@env'
 import axios from 'axios';
 import { avatarAtom } from '../atoms/avatarAtom';
 import { realnameAtom } from '../atoms/realnameAtom';
 import { numberAtom } from '../atoms/numberAtom';
 import { emailAtom } from '../atoms/emailAtom';
+import { likedAtom } from '../atoms/likedAtom'
 import { useRecoilState } from 'recoil';
 
 const Stack = createNativeStackNavigator()
@@ -43,9 +44,11 @@ function AppDrawer () {
   const [realname, setRealname] = useRecoilState(realnameAtom)
   const [number, setNumber] = useRecoilState(numberAtom)
   const [emailUser, setEmailUser] = useRecoilState(emailAtom)
+  const [liked, setLiked] = useRecoilState(likedAtom)
 
   useEffect(() => {
     getUser()
+    getLiked()
   }, [])
 
   async function getUser() {
@@ -55,7 +58,7 @@ function AppDrawer () {
         const userInfo = await axios.post(`${GET_USER}`, {
           email: storedEmail
         })
-        console.log('UserInfo from server',userInfo.data)
+        console.log('UserInfo from server', userInfo.data)
         setEmailUser(userInfo.data.email)
         setAvatar(userInfo.data.avatar)
         setNumber(userInfo.data.mobile)
@@ -65,6 +68,14 @@ function AppDrawer () {
         console.log(err)
       }
     }
+  }
+
+  async function getLiked() {
+    const getData = await AsyncStorage.getItem('liked')
+    console.log(getData)
+    if(getData != null) {
+      setLiked(JSON.parse(getData))
+    } else {setLiked([])}
   }
 
   return(

@@ -278,9 +278,10 @@ const styles = StyleSheet.create ({
     contentContainerStyle:{  
     },
     drawer_bottom_container: {
-        padding:10,
-        flexDirection:'row',
-        justifyContent:'space-between'
+        width:'100%',
+        height:50,
+        justifyContent:'center',
+        alignItems:'center'
     },
     post_top_container:{
         height:40,
@@ -388,6 +389,15 @@ const styles = StyleSheet.create ({
         width:50,
         justifyContent:'center',
         alignItems: 'center',
+    },
+    post_delete_button:{
+        position:'absolute',
+        height:'100%',
+        left:20,
+        width:50,
+        alignItems:'center',
+        justifyContent:'center',
+
     },
     post_buttons:{
         width:0.5*WIDTH,

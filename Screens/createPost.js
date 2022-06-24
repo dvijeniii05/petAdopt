@@ -128,12 +128,12 @@ function CreatePost({navigation}) {
     
     async function getImages() {
 
-        const result = await launchImageLibrary ({mediaType:'photo',selectionLimit:3, maxWidth:ITEM_WIDTH, maxHeight:ITEM_WIDTH})
+        const result = await launchImageLibrary ({mediaType:'photo',selectionLimit:2, maxWidth:ITEM_WIDTH, maxHeight:ITEM_WIDTH, quality:0.6})
         setImages(result.assets)
     }
 
     async function sendPost() {
-        console.log(tabBarHeight, StatusBar.currentHeight)
+       // console.log(tabBarHeight, StatusBar.currentHeight)
         
         const jwt = await AsyncStorage.getItem('jwt')
         console.log(jwt)
@@ -161,14 +161,17 @@ function CreatePost({navigation}) {
     } catch(err) {
         setLoading(false)
         console.log('Tut', breedValue, desc)
-        alert(err.response.data)
+        //alert(err.response)
+        console.log(err.response)
     }
     }
 
     async function sendImage() {
         if(images) {
+            console.log('FOTKI', images)
             const dbUrls = []
             for(i = 0; i < images.length; i++ ) {
+                
                 const unicode = uuidv4()
                 const locRef = storage().ref(`${unicode}`)
                 const pathToImg = `${images[i].uri}`
@@ -181,8 +184,6 @@ function CreatePost({navigation}) {
             }
             return dbUrls
         }
-        
-        
     } 
 
     const renderItem = ({item}) => {

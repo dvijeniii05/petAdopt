@@ -2,7 +2,8 @@ import React from 'react'
 import {
     View,
     Text,
-    Image
+    Image,
+    Linking
 } from 'react-native'
 import {
     DrawerContentScrollView,
@@ -15,6 +16,7 @@ import { useRecoilState } from 'recoil'
 import { avatarAtom } from '../atoms/avatarAtom'
 import { realnameAtom } from '../atoms/realnameAtom';
 import { Avatars } from '../assets/avatars'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 function DrawerContent (props) {
 const [avatar, setAvatar] = useRecoilState(avatarAtom)
@@ -45,7 +47,7 @@ const avatarSelector = picker => {
             <DrawerItem 
             label='Мои посты'
             icon={() => <AntDesign name='user' size={22} color={COLORS.dark}/>}
-            onPress={() => props.navigation.navigate('DirectScreen')}
+            onPress={() => props.navigation.navigate('UserPosts')}
             labelStyle={{color:COLORS.dark, fontSize:15}}
             />
             <DrawerItem 
@@ -63,8 +65,11 @@ const avatarSelector = picker => {
             </View>
         </DrawerContentScrollView>
         <View style={styles.drawer_bottom_container}>
-        <AntDesign name='setting' size={30} color={COLORS.dark}/>
-        <AntDesign name='logout' size={28} color={COLORS.dark}/>
+            <TouchableOpacity 
+            style={{}}
+            onPress={() => Linking.openURL(`https://www.instagram.com/veryrare104/`)}>
+                <Text style={{color:COLORS.dark}}>Тех. Поддержка тут @veryrare104</Text>
+            </TouchableOpacity>
         </View>
         </View>
     )
