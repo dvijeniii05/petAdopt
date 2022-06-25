@@ -11,6 +11,7 @@ import {styles} from '../AllStyles'
 import {COLORS} from '../assets/colors'
 import axios from 'axios'
 import {ALL_POSTS} from '@env'
+import { links } from '../Components/links'
 import { useFocusEffect } from '@react-navigation/native'
 import { useRecoilState } from 'recoil'
 import { numberAtom } from '../atoms/numberAtom';
@@ -29,7 +30,7 @@ function ProfileScreen({navigation}) {
                 let allData = []
                 for(i = 0; i < liked.length; i++) {
                     try{
-                    const getData = await axios.get(`${ALL_POSTS}`+`${liked[i]}`)
+                    const getData = await axios.get(`${links.ALL_POSTS}`+`${liked[i]}`)
                     allData.push(getData.data)
                     } catch(err) {
                         console.log(err)

@@ -24,7 +24,7 @@ import { useRecoilState } from 'recoil'
 import { COLORS } from '../assets/colors'
 import FocusAwareStatusBar from '../Components/FocusAwareStatusBar'
 import axios from 'axios'
-import {ALL_POSTS, ADD_FAVOR, DELETE_POST} from '@env'
+import { links } from '../Components/links'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const SLIDER_WIDTH = Dimensions.get('window').width 
@@ -59,7 +59,7 @@ function PostView({route, navigation}) {
             setLoading(true)
             try{ 
                 let urls = []
-                const allData = await axios.get(`${ALL_POSTS}`+id)
+                const allData = await axios.get(`${links.ALL_POSTS}`+id)
                 const resultUrls = allData.data.urls
                 const resultMobile = allData.data.mobile
                 console.log(allData.data)
@@ -132,7 +132,7 @@ function PostView({route, navigation}) {
  
     async function deletePost () {
         try{
-            const deletion = await axios.get(`${DELETE_POST}`+id)
+            const deletion = await axios.get(`${links.DELETE_POST}`+id)
            if(deletion.status == 200) {
             navigation.navigate('Home')
            }

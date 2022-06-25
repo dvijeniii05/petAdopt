@@ -23,6 +23,7 @@ import 'react-native-get-random-values'
 import { v4 as uuidv4 } from 'uuid';
 import storage from '@react-native-firebase/storage';
 import {ALL_POSTS} from '@env'
+import { links } from '../Components/links'
 import { COLORS } from '../assets/colors'
 import FocusAwareStatusBar from '../Components/FocusAwareStatusBar'
 import { numberAtom } from '../atoms/numberAtom'
@@ -139,7 +140,7 @@ function CreatePost({navigation}) {
         console.log(jwt)
 
        try{ 
-           const result = await axios.post(`${ALL_POSTS}`, {
+           const result = await axios.post(`${links.ALL_POSTS}`, {
             type: typeValue,
             breed: breedValue,
             gender: genderValue,

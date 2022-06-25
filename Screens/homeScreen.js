@@ -12,7 +12,7 @@ import {
 } from 'react-native'
 import { styles } from '../AllStyles'
 import axios from 'axios'
-import {ALL_POSTS, HOST} from '@env'
+import { links } from '../Components/links'
 import { useFocusEffect } from '@react-navigation/native'
 import { COLORS } from '../assets/colors'
 import FocusAwareStatusBar from '../Components/FocusAwareStatusBar'
@@ -35,8 +35,7 @@ useFocusEffect(
 
         async function getAll() {
             try{
-                const allData = await axios.get(`${ALL_POSTS}`)
-                
+                const allData = await axios.get(`${links.ALL_POSTS}`)
                 setData(allData.data)
             } catch(err) {
                 console.log(err)
@@ -55,7 +54,7 @@ useFocusEffect(
 
 async function filterByType (type) {
     try {
-        const filteredCats = await axios.get(`${ALL_POSTS}${type}`)
+        const filteredCats = await axios.get(`${links.ALL_POSTS}${type}`)
         
         setData(filteredCats.data)
     } catch(err) {

@@ -15,7 +15,7 @@ import { styles } from '../AllStyles'
 import { COLORS } from '../assets/colors'
 import FocusAwareStatusBar from '../Components/FocusAwareStatusBar'
 import Icon from 'react-native-vector-icons/Entypo'
-import {SIGN_UP, ALL_POSTS} from '@env'
+import { links } from '../Components/links'
 import axios from 'axios'
 import { useRecoilState } from 'recoil'
 import { avatarAtom } from '../atoms/avatarAtom';
@@ -63,7 +63,7 @@ function SignUpScreen ({route, navigation}) {
 
     async function sendDetails () {
         try {
-            const result = await axios.post(`${SIGN_UP}`, {
+            const result = await axios.post(`${links.SIGN_UP}`, {
                 username: username,
                 email: email,
                 password: password,

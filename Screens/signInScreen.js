@@ -17,7 +17,7 @@ import { styles } from '../AllStyles'
 import { COLORS } from '../assets/colors'
 import FocusAwareStatusBar from '../Components/FocusAwareStatusBar'
 import axios from 'axios'
-import {SIGN_IN} from '@env'
+import { links } from '../Components/links'
 import { useRecoilState } from 'recoil'
 import { emailAtom } from '../atoms/emailAtom';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -44,6 +44,7 @@ function SignInScreen ({navigation}) {
 
     function validation() {
         if(email && password) {
+            console.log(loading)
             sendDetails()
         } else {
             setLoading(false)
@@ -53,10 +54,11 @@ function SignInScreen ({navigation}) {
 
     async function sendDetails () {
         try {
-            const result = await axios.post(`${SIGN_IN}`, {
+            const result = await axios.post(`${links.SIGN_IN}`, {
                 email: email,
                 password: password
             })
+            
             await AsyncStorage.setItem('jwt', result.data)
             await AsyncStorage.setItem('email', email)
             setEmailUser(email)
@@ -77,7 +79,7 @@ function SignInScreen ({navigation}) {
         <KeyboardAwareScrollView 
             keyboardShouldPersistTaps='always'
             behavior={Platform.OS === 'ios' ? 'padding' : null}
-            style={{flex:1}}>
+            style={[{flex:1}, loading && {opacity: 0.2}]}>
             <FocusAwareStatusBar backgroundColor={COLORS.dark} barStyle='light-content'/>
             <View style={styles.loader}>
             <ActivityIndicator

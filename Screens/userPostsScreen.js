@@ -11,6 +11,7 @@ import {styles} from '../AllStyles'
 import {COLORS} from '../assets/colors'
 import axios from 'axios'
 import {USER_POSTS} from '@env'
+import { links } from '../Components/links'
 import { useFocusEffect } from '@react-navigation/native'
 import {useRecoilState} from 'recoil'
 import { numberAtom } from '../atoms/numberAtom';
@@ -25,7 +26,7 @@ function UserPosts({navigation}) {
     
             async function getAll() {
                 try{
-                    const allData = await axios.get(`${USER_POSTS}`+mobile)
+                    const allData = await axios.get(`${links.USER_POSTS}`+mobile)
                     
                     setData(allData.data)
                 } catch(err) {

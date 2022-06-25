@@ -14,6 +14,7 @@ import PostView from '../Screens/postView'
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import {GET_USER, ADD_LIKED} from '@env'
+import { links } from '../Components/links'
 import axios from 'axios';
 import { avatarAtom } from '../atoms/avatarAtom';
 import { realnameAtom } from '../atoms/realnameAtom';
@@ -55,7 +56,7 @@ function AppDrawer () {
     const storedEmail = await AsyncStorage.getItem('email')
     if(storedEmail) {
       try{
-        const userInfo = await axios.post(`${GET_USER}`, {
+        const userInfo = await axios.post(`${links.GET_USER}`, {
           email: storedEmail
         })
         console.log('UserInfo from server', userInfo.data)
