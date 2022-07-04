@@ -1,4 +1,4 @@
-## .smartBasket: Privacy policy
+## .petMe: Privacy policy
 
 Welcome to the PetMe app for Ios & Android! This ia a non-profit mobile application, designed to help find homes for all animals in Azerbaijan.
 
