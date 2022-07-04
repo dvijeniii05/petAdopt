@@ -31,6 +31,7 @@
     "react-native-gesture-handler": "^1.9.0",
     "react-native-get-random-values": "^1.7.2",
     "react-native-image-picker": "^4.7.3",
+    "react-native-image-zoom-viewer": "^3.0.1",
     "react-native-intl-phone-field": "^0.3.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-masked-text": "^1.13.0",

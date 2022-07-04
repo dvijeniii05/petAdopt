@@ -18,6 +18,13 @@ const styles = StyleSheet.create ({
         justifyContent:'center',
         backgroundColor:COLORS.bej
     },
+    bg_auth_container:{
+        height:'100%',
+        width:WIDTH,
+        alignItems:'center',
+        justifyContent:'center',
+        backgroundColor:COLORS.bej
+    },
     auth_logo: {
         width: 300,
         height: 323.5
@@ -106,7 +113,7 @@ const styles = StyleSheet.create ({
         borderRadius:10,
         borderColor:COLORS.dark,
         width: 0.8*WIDTH,
-        height: 0.08*HEIGHT,
+        height: 0.07*HEIGHT,
         justifyContent:'center',
     },
     signUp_textinput_text:{
@@ -184,6 +191,7 @@ const styles = StyleSheet.create ({
         width:WIDTH,
         justifyContent:'center',
         alignItems: 'center',
+        
     },
     home_icon_container:{
         flex:1,
@@ -244,10 +252,11 @@ const styles = StyleSheet.create ({
        tintColor:'white'
     },
     item_container:{
-        height: 0.32*HEIGHT,
+        height: 0.25*HEIGHT,
         width:160,
         backgroundColor:COLORS.dark,
-        margin: 20,
+        marginVertical: 20,
+        marginHorizontal: 15,
         borderRadius: 25,
         overflow: 'hidden'
         
@@ -270,18 +279,19 @@ const styles = StyleSheet.create ({
         backgroundColor:COLORS.bej
     },
     drawer_top_container:{
-        height:0.3*HEIGHT,
+        height:0.21*HEIGHT,
         width:'100%',
         alignItems:'center',
-        padding:30
+        padding:20,
     },
-    contentContainerStyle:{  
+    contentContainerStyle:{ 
+        paddingTop:10,
     },
     drawer_bottom_container: {
         width:'100%',
         height:50,
         justifyContent:'center',
-        alignItems:'center'
+        alignItems:'center',
     },
     post_top_container:{
         height:40,
@@ -299,7 +309,7 @@ const styles = StyleSheet.create ({
         flex:1.5,
         width: WIDTH,
         alignItems:'center',
-        justifyContent:'center',
+        justifyContent:'center'
     },
     post_image_container:{
         flex:1,
@@ -317,7 +327,6 @@ const styles = StyleSheet.create ({
     },
     post_category_container:{
         flex:1.9,
-        flexDirection:'row',
         zIndex:3,
     },
     post_category_one_container:{
@@ -340,7 +349,7 @@ const styles = StyleSheet.create ({
     post_category_text_container_view:{
         flexDirection:'row',
         alignItems:'center',
-        paddingRight:10
+        paddingRight:10,
     },
     post_category_text_container:{
         flexDirection:'row',

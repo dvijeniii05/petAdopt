@@ -6,11 +6,11 @@ import {
     Image,
     TouchableOpacity
 } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import FocusAwareStatusBar from '../Components/FocusAwareStatusBar'
 import {styles} from '../AllStyles'
 import {COLORS} from '../assets/colors'
 import axios from 'axios'
-import {USER_POSTS} from '@env'
 import { links } from '../Components/links'
 import { useFocusEffect } from '@react-navigation/native'
 import {useRecoilState} from 'recoil'
@@ -35,7 +35,6 @@ function UserPosts({navigation}) {
             }
     
             getAll()
-            console.log('TTUTUUT',data)
     
         }, [])
     )
@@ -62,22 +61,22 @@ function UserPosts({navigation}) {
     }
 
     return(
-        <View style={{flex:1}}>
-        <View style={styles.home}>
+        <SafeAreaView style={styles.home}>
         <FocusAwareStatusBar backgroundColor={COLORS.bej} barStyle='dark-content'/>
-            
-            <View style={styles.home_bottom_container}>
-            {data.message && <View style={{top:20}}><Text style={{fontSize:25, color:COLORS.darkGreen}}>Ваши Обьявления</Text></View>}
-            <FlatList
-            data={data}
-            renderItem={renderItem}
-            numColumns={2}
-            horizontal={false}
-            keyExtractor={(item) => item._id}
-            />
+            <View style={styles.home_middle_container}>
+                <View style={{top:20}}><Text style={{fontSize:25, color:COLORS.darkGreen}}>Ваши Обьявления</Text></View>
             </View>
-        </View>
-        </View>
+        
+            <View style={styles.home_bottom_container}>
+                <FlatList
+                data={data}
+                renderItem={renderItem}
+                numColumns={2}
+                horizontal={false}
+                keyExtractor={(item) => item._id}
+                />
+            </View>
+        </SafeAreaView>
     )
 }
 

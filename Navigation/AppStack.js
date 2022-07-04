@@ -73,7 +73,6 @@ function AppDrawer () {
 
   async function getLiked() {
     const getData = await AsyncStorage.getItem('liked')
-    console.log(getData)
     if(getData != null) {
       setLiked(JSON.parse(getData))
     } else {setLiked([])}

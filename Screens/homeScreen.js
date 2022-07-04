@@ -5,17 +5,16 @@ import {
     Image,
     TouchableOpacity,
     TouchableWithoutFeedback,
-    TextInput,
     FlatList,
     LogBox,
-    BackHandler
+    StatusBar
 } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { styles } from '../AllStyles'
 import axios from 'axios'
 import { links } from '../Components/links'
 import { useFocusEffect } from '@react-navigation/native'
 import { COLORS } from '../assets/colors'
-import FocusAwareStatusBar from '../Components/FocusAwareStatusBar'
 
 LogBox.ignoreLogs(['Encountered two children with the same key, ...'])
 
@@ -85,9 +84,8 @@ async function filterByType (type) {
     
     return (
         <HideKeyboard>
-        <View style={{flex:1}}>
-        <View style={styles.home}>
-        <FocusAwareStatusBar backgroundColor={COLORS.bej} barStyle='dark-content'/>
+        <SafeAreaView style={{flex:1, backgroundColor: COLORS.bej}} edges={['top']}>
+        <StatusBar barStyle='dark-content' />
             <View style={styles.home_middle_container}>
                 <View style={styles.home_category_container}>
                 <TouchableOpacity
@@ -98,7 +96,7 @@ async function filterByType (type) {
                 </View>
                 <View style={styles.home_category_container}>
                 <TouchableOpacity
-                onPress={() => filterByType('all')}
+                onPress={() => filterByType('')}
                 style={styles.home_category_pick}>
                     <Image source={require('../assets/pets.png')} resizeMode='contain' style={styles.category_image}/>
                 </TouchableOpacity>
@@ -117,11 +115,12 @@ async function filterByType (type) {
             renderItem={renderItem}
             numColumns={2}
             horizontal={false}
+            showsVerticalScrollIndicator={false}
+            directionalLockEnabled={true}
             keyExtractor={(item) => item._id}
             />
             </View>
-        </View>
-        </View>
+        </SafeAreaView>
         </HideKeyboard>
     )
 }

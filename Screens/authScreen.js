@@ -5,13 +5,14 @@ import {
     TouchableOpacity,
     Image,
 } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {styles} from '../AllStyles'
 import { COLORS } from '../assets/colors';
 import FocusAwareStatusBar from '../Components/FocusAwareStatusBar'
 
 function AuthScreen ({navigation}) {
     return (
-        
+
     <View style={styles.background_container}>
         <FocusAwareStatusBar backgroundColor={COLORS.bej} barStyle='dark-content'/>
         <View style={styles.auth_logo_container}>
@@ -36,6 +37,7 @@ function AuthScreen ({navigation}) {
         </View>
         
     </View>
+    
     )
 }
 

@@ -8,12 +8,14 @@ import {
     Keyboard,
     Platform,
     Image,
-    ActivityIndicator
+    ActivityIndicator,
+    StatusBar,
+    Alert
 } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from '../AllStyles'
 import { COLORS } from '../assets/colors'
-import FocusAwareStatusBar from '../Components/FocusAwareStatusBar'
 import Icon from 'react-native-vector-icons/Entypo'
 import { links } from '../Components/links'
 import axios from 'axios'
@@ -24,6 +26,7 @@ import { numberAtom } from '../atoms/numberAtom';
 import { emailAtom } from '../atoms/emailAtom';
 import IntlPhoneField from 'react-native-intl-phone-field'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { useFocusEffect } from '@react-navigation/native';
 
 const HideKeyboard = ({ children }) => (
     <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
@@ -46,13 +49,27 @@ function SignUpScreen ({route, navigation}) {
     const [mobValid, setMobValid] = useState(false)
     const {url, id} = route.params
 
+    useFocusEffect(
+        React.useCallback(() => {
+            Alert.alert(
+        'Важно!',
+        'Пожалуйста впишите номер, который подвязан к вашему Telegram или WhatsApp. Это необходимо для связи с другими пользователями.',
+        [
+            {
+                text: 'Понятно',
+                style: 'default'
+            }
+        ]
+    )
+        }, [])
+    )
+
     function passwordState() {
         setSecurePass(!securePass)
         setEyeState(eyeState === 'eye-with-line' ? 'eye' : 'eye-with-line')
     }
 
     function validation() {
-        console.log(username, email, password)
         if(username && email && password && mobValid) {
             sendDetails()
         } else {
@@ -70,13 +87,11 @@ function SignUpScreen ({route, navigation}) {
                 mobile: mobile,
                 avatar: id
             })
-            console.log(result.data)
             const token = AsyncStorage.setItem('jwt', result.data)
-            setAvatar(url)
+            setAvatar(id)
             setRealname(username)
             setNumber(mobile)
             setEmailUser(email)
-            console.log(token)
             setLoading(false)
             navigation.navigate('Drawer', {Screen: 'AppTab'})
         } catch(error) {
@@ -86,12 +101,13 @@ function SignUpScreen ({route, navigation}) {
     }
 
     return(
-        <HideKeyboard>
+        <SafeAreaView style={{flex:1, backgroundColor:COLORS.dark}}>
+        
             <KeyboardAwareScrollView
             keyboardShouldPersistTaps='always' 
             behavior={Platform.OS === 'ios' ? 'padding' : null}
-            style={{flex:1}}>
-            <FocusAwareStatusBar backgroundColor={COLORS.dark} barStyle='light-content'/>
+            style={[{flex:1, backgroundColor:COLORS.dark}, loading && {opacity: 0.2}]}>
+            <StatusBar barStyle='light-content'/>
             <View style={styles.loader}>
             <ActivityIndicator
             animating={loading}
@@ -151,7 +167,7 @@ function SignUpScreen ({route, navigation}) {
                 defaultCountry="AZ"
                 defaultPrefix="+994"
                 defaultFlag="🇦🇿"
-                containerStyle={{ paddingHorizontal:20}}
+                containerStyle={{ paddingHorizontal:20, height:'100%'}}
                 textInputStyle={{fontSize:20, textAlign:'center'}}
                 />
                 </View>
@@ -170,7 +186,7 @@ function SignUpScreen ({route, navigation}) {
             </View>
             </View>
             </KeyboardAwareScrollView>
-        </HideKeyboard>
+        </SafeAreaView>
     )
 }
 

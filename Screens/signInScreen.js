@@ -44,7 +44,6 @@ function SignInScreen ({navigation}) {
 
     function validation() {
         if(email && password) {
-            console.log(loading)
             sendDetails()
         } else {
             setLoading(false)
@@ -79,7 +78,7 @@ function SignInScreen ({navigation}) {
         <KeyboardAwareScrollView 
             keyboardShouldPersistTaps='always'
             behavior={Platform.OS === 'ios' ? 'padding' : null}
-            style={[{flex:1}, loading && {opacity: 0.2}]}>
+            style={[{flex:1, backgroundColor: COLORS.bej}, loading && {opacity: 0.2}]}>
             <FocusAwareStatusBar backgroundColor={COLORS.dark} barStyle='light-content'/>
             <View style={styles.loader}>
             <ActivityIndicator

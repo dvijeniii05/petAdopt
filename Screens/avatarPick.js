@@ -6,6 +6,7 @@ import {
     FlatList,
     TouchableOpacity
 } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { COLORS } from '../assets/colors'
 import { styles } from '../AllStyles'
 import { avatarsData } from '../assets/avatarsData'
@@ -31,7 +32,7 @@ function AvatarPick({navigation}) {
     }
 
     return(
-        <View style={{flex:1, backgroundColor: COLORS.bej}}>
+        <SafeAreaView style={{flex:1, backgroundColor: COLORS.bej}}>
             <FocusAwareStatusBar backgroundColor={COLORS.bej} barStyle='dark-content'/>
             <View style={styles.avatar_pick_main_container}>
                 <Text style={styles.avatar_text}>
@@ -47,7 +48,7 @@ function AvatarPick({navigation}) {
                     />
                 </View>
             </View>
-        </View>
+        </SafeAreaView>
     )
 }
 

@@ -8,12 +8,12 @@
 
 import React, {useEffect, useState} from 'react';
 import {
-  SafeAreaView,
   Modal,
   View,
   Text,
   TouchableOpacity
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {NavigationContainer} from '@react-navigation/native'
 import AppDrawer from './Navigation/AppStack';
 import { RecoilRoot } from 'recoil'
@@ -22,6 +22,7 @@ import { styles } from './AllStyles'
 import SplashScreen from 'react-native-splash-screen'
 import 'react-native-gesture-handler'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { COLORS } from './assets/colors';
 
 
 const PERSISTENCE_KEY = 'NAVIGATION_STATE';
@@ -97,15 +98,14 @@ function App () {
 
   return (
     <RecoilRoot>
-    <SafeAreaView style={[{flex:1}, offline && {opacity: 0.3}]}>
+    <View style={[{flex:1, backgroundColor: 'transaprent'}, offline && {opacity: 0.3}]}>
       <NoInternetModal show={offline}/>
     <NavigationContainer
     initialState={initialState}
-    onStateChange={(state) => AsyncStorage.setItem(PERSISTENCE_KEY, JSON.stringify(state))}
-    >
+    onStateChange={(state) => AsyncStorage.setItem(PERSISTENCE_KEY, JSON.stringify(state))}>
       <AppDrawer/>
     </NavigationContainer>
-    </SafeAreaView>
+    </View>
     </RecoilRoot>
   )
 }
