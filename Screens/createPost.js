@@ -9,6 +9,8 @@ import {
     FlatList,
     Dimensions,
     ActivityIndicator,
+    Keyboard,
+    TouchableWithoutFeedback
 } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -32,8 +34,16 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 const {width: WIDTH, height: HEIGHT} = Dimensions.get('window')
 
+const HideKeyboard = ({children}) => {
+    return(
+    <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
+      {children}
+    </TouchableWithoutFeedback>
+    )
+}
+
 function CreatePost({navigation}) {
-    const [number, setNumber] = useRecoilState(numberAtom)
+    const[number, setNumber] = useRecoilState(numberAtom)
     const[typeOpen, setTypeOpen] =useState(false)
     const[genderOpen, setGenderOpen] = useState(false)
     const[ageOpen, setAgeOpen] = useState(false)
@@ -102,6 +112,18 @@ function CreatePost({navigation}) {
     {
         label: '8 лет',
         value: '8 лет'
+    },
+    {
+        label: '9 лет',
+        value: '9 лет'
+    },
+    {
+        label: '10 лет',
+        value: '10 лет'
+    },
+    {
+        label: '10 + лет',
+        value: '10 + лет'
     },]
     const stray = [{
         label: 'да',
@@ -112,10 +134,10 @@ function CreatePost({navigation}) {
     }]
     const stiril = [{
         label: 'да',
-        value: 'Стирильный'
+        value: 'Стерильный'
     }, {
         label:'нет',
-        value:'Не стирильный'
+        value:'Не стерильный'
     }]
     const jab = [{
         label: 'да',
@@ -182,7 +204,7 @@ function CreatePost({navigation}) {
     } catch(err) {
         setLoading(false)
         alert(err.response.data)
-        console.log(err.response)
+        console.log(err)
     }
     }
 
@@ -227,11 +249,12 @@ function CreatePost({navigation}) {
             color='#4B4F40'
             />
             </View>
+            
             <KeyboardAwareScrollView
             keyboardShouldPersistTaps='always' 
             behavior={Platform.OS === 'ios' ? 'padding' : null}
             style={{flex:1}}>
-            
+            <HideKeyboard>
             <View style={[styles.post_middle_container, {height: HEIGHT-tabBarHeight-45}]}>
                 <Text>{/* 44 is the TopPadding for SafeAreaView */}</Text>
                 <View style={[styles.post_create_image_container, {marginBottom:10}]}>
@@ -273,7 +296,7 @@ function CreatePost({navigation}) {
                 <View style={styles.post_info_container}>
                     <View style={styles.post_textinput_container}>
                     <TextInput
-                    placeholder='Парода'
+                    placeholder='Порода'
                     onChangeText={setBreedValue}
                     value={breedValue}
                     style={styles.post_category_textinput}
@@ -383,8 +406,9 @@ function CreatePost({navigation}) {
             </View>
             </View>
             </View>
-            
+            </HideKeyboard>
             </KeyboardAwareScrollView>
+            
         </View>
         </SafeAreaView>
     )

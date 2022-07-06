@@ -88,6 +88,7 @@ function SignUpScreen ({route, navigation}) {
                 avatar: id
             })
             const token = AsyncStorage.setItem('jwt', result.data)
+            await AsyncStorage.setItem('email', email)
             setAvatar(id)
             setRealname(username)
             setNumber(mobile)
@@ -107,6 +108,7 @@ function SignUpScreen ({route, navigation}) {
             keyboardShouldPersistTaps='always' 
             behavior={Platform.OS === 'ios' ? 'padding' : null}
             style={[{flex:1, backgroundColor:COLORS.dark}, loading && {opacity: 0.2}]}>
+            
             <StatusBar barStyle='light-content'/>
             <View style={styles.loader}>
             <ActivityIndicator
@@ -115,6 +117,7 @@ function SignUpScreen ({route, navigation}) {
             color='#4B4F40'
             />
             </View>
+            <HideKeyboard>
             <View  style={[styles.background_container, {backgroundColor:COLORS.dark}]}>
                 <View style={styles.signUp_top_container}>
                     <View style={styles.signUp_text_container}>
@@ -185,6 +188,7 @@ function SignUpScreen ({route, navigation}) {
                 </View>
             </View>
             </View>
+            </HideKeyboard>
             </KeyboardAwareScrollView>
         </SafeAreaView>
     )

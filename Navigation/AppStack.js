@@ -54,6 +54,7 @@ function AppDrawer () {
 
   async function getUser() {
     const storedEmail = await AsyncStorage.getItem('email')
+    console.log('EMAIL IS STORED', storedEmail)
     if(storedEmail) {
       try{
         const userInfo = await axios.post(`${links.GET_USER}`, {

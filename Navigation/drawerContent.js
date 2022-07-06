@@ -37,7 +37,7 @@ const {width: WIDTH, height: HEIGHT} = Dimensions.get('window')
                     <Image source={avatarSelector(avatar)} resizeMode='contain' style={{height:110, width:110}}/>
                 </View>
                 <View style={{paddingTop:20}}>
-                        <Text style={{color:'black'}}>{realname}</Text>
+                        <Text style={{color:'black', textAlign:'center'}}>{realname}</Text>
                 </View>
             </View>
         <DrawerContentScrollView {...props} contentContainerStyle={styles.contentContainerStyle}>

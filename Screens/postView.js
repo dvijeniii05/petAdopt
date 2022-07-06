@@ -143,14 +143,14 @@ function PostView({route, navigation}) {
     }
 
     function stirilDef () {
-        if(data.stiril === 'Стирильный' && data.gender === 'Девочка') {
-            return 'Стирильная'
-        } else if (data.stiril === 'Стирильный' && data.gender === 'Мальчик') {
-            return 'Стирильный'
-        } else if (data.stiril === 'Не стирильный' && data.gender === 'Мальчик') {
-            return 'Не стирильный'
-        } else if (data.stiril === 'Не стирильный' && data.gender === 'Девочка') {
-            return 'Не стирильная'
+        if(data.stiril === 'Стерильный' && data.gender === 'Девочка') {
+            return 'Стерильная'
+        } else if (data.stiril === 'Стерильный' && data.gender === 'Мальчик') {
+            return 'Стерильный'
+        } else if (data.stiril === 'Не стерильный' && data.gender === 'Мальчик') {
+            return 'Не стерильный'
+        } else if (data.stiril === 'Не стерильный' && data.gender === 'Девочка') {
+            return 'Не стерильная'
         } 
     }
 
