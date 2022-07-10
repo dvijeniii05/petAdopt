@@ -27,7 +27,8 @@ function UserPosts({navigation}) {
             async function getAll() {
                 try{
                     const allData = await axios.get(`${links.USER_POSTS}`+mobile)
-                    
+                    console.log(allData.data)
+                    console.log('NUMBER', mobile)
                     setData(allData.data)
                 } catch(err) {
                     console.log(err)

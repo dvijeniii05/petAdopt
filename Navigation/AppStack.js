@@ -48,9 +48,10 @@ function AppDrawer () {
   const [liked, setLiked] = useRecoilState(likedAtom)
 
   useEffect(() => {
+    console.log('DRAWER')
     getUser()
     getLiked()
-  }, [])
+  }, [emailUser])
 
   async function getUser() {
     const storedEmail = await AsyncStorage.getItem('email')

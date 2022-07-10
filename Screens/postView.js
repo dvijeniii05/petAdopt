@@ -9,7 +9,8 @@ import {
     Pressable,
     ActivityIndicator,
     Alert,
-    Modal
+    Modal,
+    Linking
 } from 'react-native'
 import ImageViewer from 'react-native-image-zoom-viewer'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -259,8 +260,8 @@ return(
                 <View style={styles.post_category_one_container}>
             <View style={styles.post_category_one_view}>
                 <View style={styles.post_category_text_container_view}>
-                <Octicon name='dot-fill' size={17} color={COLORS.blue}/>
-                <Text style={styles.post_category_text}>{typeDef()}</Text>
+                <Icon name='phone' size={17} color={COLORS.blue}/>
+                <Text style={styles.post_category_text}>{data.mobile}</Text>
                 </View>
                 <View style={styles.post_category_text_container_view}>
                 <Octicon name='dot-fill' size={17} color={COLORS.blue}/>
@@ -299,10 +300,14 @@ return(
         </View>
         </View>
         <View style={styles.post_bottom_container}>
-            {isCreator && 
+            {isCreator ? 
             <TouchableOpacity style={styles.post_delete_button} onPress={() => alertPost()}>
                 <Feather name='trash-2' color={COLORS.dark} size={35}/>
-            </TouchableOpacity>
+            </TouchableOpacity> 
+            :
+            <TouchableOpacity style={styles.post_delete_button} onPress={() => Linking.openURL(`tel://${mobile}`)}>
+                <Feather name='phone-call' color={COLORS.dark} size={35}/>
+            </TouchableOpacity> 
             }
             <TouchableOpacity style={styles.post_buttons} onPress={() => setVisible(true)}>
                 <Text style={styles.post_buttons_text}>Забрать домой!</Text>
