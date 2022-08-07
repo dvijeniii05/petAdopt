@@ -6,8 +6,12 @@ import {
 } from 'react-native'
 import FocusAwareStatusBar from '../Components/FocusAwareStatusBar'
 import { COLORS } from '../assets/colors'
+import { BottomTabScreenProps } from '@react-navigation/bottom-tabs'
+import { TabParams } from '../Navigation/bottomTab'
 
-function ForumScreen ({navigation}) {
+type Props = BottomTabScreenProps<TabParams, 'Forum'>
+
+const ForumScreen = ({navigation} : Props) => {
     return(
         <View style={{flex:1, backgroundColor: COLORS.bej}}>
             <FocusAwareStatusBar backgroundColor={COLORS.bej} barStyle='dark-content'/>

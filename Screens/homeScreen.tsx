@@ -1,13 +1,13 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState} from 'react'
 import {  
     View,
     Text,
     Image,
     TouchableOpacity,
-    TouchableWithoutFeedback,
     FlatList,
     LogBox,
-    StatusBar
+    StatusBar,
+    ListRenderItem
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { styles } from '../AllStyles'
@@ -15,18 +15,23 @@ import axios from 'axios'
 import { links } from '../Components/links'
 import { useFocusEffect } from '@react-navigation/native'
 import { COLORS } from '../assets/colors'
+import HideKeyboard from '../Components/HideKeyboard';
+import { DrawerScreenProps } from '@react-navigation/drawer'
+import { DrawerParams } from '../Navigation/AppStack'
 
 LogBox.ignoreLogs(['Encountered two children with the same key, ...'])
 
-function HideKeyboard ({children}) {
-    return(
-        <TouchableWithoutFeedback>
-            {children}
-        </TouchableWithoutFeedback>
-    )
+interface ItemType {
+    _id: string,
+    urls: string[],
+    gender: string,
+    age: number,
+    stray: string
 }
 
-function HomeScreen ({navigation}) {
+type Props = DrawerScreenProps<DrawerParams, 'AppTab'>
+
+const HomeScreen = ({navigation}: Props) => {
 const [data, setData] = useState([])
 
 useFocusEffect(
@@ -51,7 +56,7 @@ useFocusEffect(
     return () => backHandler.remove()
 }, []) */   
 
-async function filterByType (type) {
+async function filterByType (type : string) {
     try {
         const filteredCats = await axios.get(`${links.ALL_POSTS}${type}`)
         
@@ -61,7 +66,7 @@ async function filterByType (type) {
     }
 }
 
-    const renderItem = ({item}) => {
+    const renderItem : ListRenderItem<ItemType> = ({item}) => {
         return(
             <View >
             <TouchableOpacity 
@@ -70,7 +75,7 @@ async function filterByType (type) {
                 id: item._id
             })}>
                 <View style={styles.item_image_container}>
-                    <Image source={{uri: `${item.urls[0]}`}} resizeMode='cover' style={styles.item_image}/>
+                    <Image source={{uri: `${item?.urls[0]}`}} resizeMode='cover' style={styles.item_image}/>
                 </View>
                 <View style={styles.item_text_container}>
                     <Text style={{textAlign:'center', color:COLORS.bej, fontSize:16}}>{item.gender}</Text>

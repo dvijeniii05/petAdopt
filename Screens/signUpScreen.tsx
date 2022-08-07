@@ -4,8 +4,6 @@ import {
     View,
     TextInput,
     TouchableOpacity,
-    TouchableWithoutFeedback,
-    Keyboard,
     Platform,
     Image,
     ActivityIndicator,
@@ -26,15 +24,15 @@ import { numberAtom } from '../atoms/numberAtom';
 import { emailAtom } from '../atoms/emailAtom';
 import IntlPhoneField from 'react-native-intl-phone-field'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import { useFocusEffect } from '@react-navigation/native';
+import { RouteProp, useFocusEffect, useNavigation} from '@react-navigation/native';
+import HideKeyboard from '../Components/HideKeyboard';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { StackParams } from '../Navigation/AppStack';
 
-const HideKeyboard = ({ children }) => (
-    <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
-      {children}
-    </TouchableWithoutFeedback>
-  );
+type Props = NativeStackScreenProps<StackParams, 'SignUpScreen'>
 
-function SignUpScreen ({route, navigation}) {
+const SignUpScreen = ({route, navigation} : Props) => {
+
     const [loading, setLoading] = useState(false)
     const [avatar, setAvatar] = useRecoilState(avatarAtom)
     const [realname, setRealname] = useRecoilState(realnameAtom)
@@ -42,11 +40,11 @@ function SignUpScreen ({route, navigation}) {
     const [emailUser, setEmailUser] = useRecoilState(emailAtom)
     const [securePass, setSecurePass] = useState(true)
     const [eyeState, setEyeState] = useState('eye-with-line')
-    const [username, setUsername] = useState(null)
-    const [email, setEmail] = useState(null)
-    const [password, setPassword] = useState(null)
-    const [mobile, setMobile] = useState(null)
-    const [mobValid, setMobValid] = useState(false)
+    const [username, setUsername] = useState<string>('')
+    const [email, setEmail] = useState<string>('')
+    const [password, setPassword] = useState<string>('')
+    const [mobile, setMobile] = useState<string>('')
+    const [mobValid, setMobValid] = useState<boolean>(false)
     const {url, id} = route.params
 
     useFocusEffect(
@@ -74,7 +72,17 @@ function SignUpScreen ({route, navigation}) {
             sendDetails()
         } else {
             setLoading(false)
-            alert('Вы оставили одно или несколько из полей пустыми')
+            console.log('NOT GETTING PARAMS', url, id)
+            Alert.alert(
+                'Внимание!',
+                'Вы оставили одно или несколько из полей пустыми',
+                [
+                    {
+                        text: 'Вернуться',
+                        style: 'default'
+                    }
+                ]
+            )
         }
     }
 
@@ -87,7 +95,7 @@ function SignUpScreen ({route, navigation}) {
                 mobile: mobile,
                 avatar: id
             })
-            const token = AsyncStorage.setItem('jwt', result.data)
+            await AsyncStorage.setItem('jwt', result.data)
             await AsyncStorage.setItem('email', email)
             setAvatar(id)
             setRealname(username)
@@ -95,9 +103,18 @@ function SignUpScreen ({route, navigation}) {
             setEmailUser(email)
             setLoading(false)
             navigation.navigate('Drawer', {Screen: 'AppTab'})
-        } catch(error) {
+        } catch(error:any) {
             setLoading(false)
-            alert(error.response.data)
+            Alert.alert(
+                'Внимание',
+                error.response.data,
+                [
+                    {
+                        text: 'Понятно',
+                        style: 'default'
+                    }
+                ]
+            )
         }
     }
 
@@ -105,8 +122,7 @@ function SignUpScreen ({route, navigation}) {
         <SafeAreaView style={{flex:1, backgroundColor:COLORS.dark}}>
         
             <KeyboardAwareScrollView
-            keyboardShouldPersistTaps='always' 
-            behavior={Platform.OS === 'ios' ? 'padding' : null}
+            keyboardShouldPersistTaps='always'
             style={[{flex:1, backgroundColor:COLORS.dark}, loading && {opacity: 0.2}]}>
             
             <StatusBar barStyle='light-content'/>
@@ -162,9 +178,9 @@ function SignUpScreen ({route, navigation}) {
 
                 <View style={[styles.signUp_textinput_container, {overflow:'hidden'}]}>
                 <IntlPhoneField
-                onEndEditing={(result) => console.log(result)}
-                onValidation={(isValid) => setMobValid(isValid)}
-                onValueUpdate={(value) => {
+                onEndEditing={(result: any) => console.log(result)}
+                onValidation={(isValid :boolean) => setMobValid(isValid)}
+                onValueUpdate={(value: string) => {
                     setMobile(value)
                 }}
                 defaultCountry="AZ"

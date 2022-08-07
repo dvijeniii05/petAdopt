@@ -4,17 +4,27 @@ import {
     Text,
     Image,
     FlatList,
-    TouchableOpacity
+    TouchableOpacity,
+    ListRenderItem
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { COLORS } from '../assets/colors'
 import { styles } from '../AllStyles'
 import { avatarsData } from '../assets/avatarsData'
 import FocusAwareStatusBar from '../Components/FocusAwareStatusBar'
+import { useNavigation } from '@react-navigation/native'
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'
+import { StackParams } from '../Navigation/AppStack'
 
-function AvatarPick({navigation}) {
+interface avatarType {
+uri: object,
+id: string
+}
 
-    function renderItem({item}) {
+const AvatarPick = () => {
+    const navigation = useNavigation<NativeStackNavigationProp<StackParams>>()
+
+    const renderItem: ListRenderItem<avatarType> = ({item}) => {
         return(
             <TouchableOpacity style={styles.avatar_flatlist_container}
             onPress={() => navigation.navigate('SignUpScreen',{
@@ -40,7 +50,7 @@ function AvatarPick({navigation}) {
                 </Text>
                 <View style={styles.avatar_inner_container}>
                     <FlatList
-                    keyExtractor={(item) => item.uri}
+                    keyExtractor={(item) => item.id}
                     data={avatarsData}
                     renderItem={renderItem}
                     numColumns={2}

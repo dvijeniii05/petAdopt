@@ -6,14 +6,16 @@ import {
 
 } from 'react-native'
 
-import {ALL_POSTS, HOST} from '@env'
 import axios from 'axios'
 import io from 'socket.io-client'
 import { v4 as uuidv4 } from 'uuid';
+import { TabParams } from '../Navigation/bottomTab';
+import { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
 
-function MessageCreator ({navigation}) {
+type Props = BottomTabScreenProps<TabParams,'MessageCreator'>
+
+const MessageCreator = ({navigation} : Props) => {
     useEffect(() => {
-        const socket = io(`${HOST}`)
 
     })
     return(

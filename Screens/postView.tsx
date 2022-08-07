@@ -30,24 +30,44 @@ import FocusAwareStatusBar from '../Components/FocusAwareStatusBar'
 import axios from 'axios'
 import { links } from '../Components/links'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { DrawerScreenProps } from '@react-navigation/drawer'
+import { DrawerParams } from '../Navigation/AppStack'
+import { IImageInfo } from 'react-native-image-zoom-viewer/built/image-viewer.type'
+import { jabDef, stirilDef, strayDef } from '../Components/SyntaxAdjuster'
+import { dataProps } from '../types/Types'
 
 const SLIDER_WIDTH = Dimensions.get('window').width 
 export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.6)
-const {width: WIDTH, height: HEIGHT} = Dimensions.get('window')
 
-function PostView({route, navigation}) {
+type Props = DrawerScreenProps<DrawerParams, 'PostView'>
+
+function PostView({route, navigation} : Props) {
     const ref = useRef(null)
     const [mobile, setMobile] = useState(null)
-    const [data, setData] = useState([])
-    const [imgArray, setImgArray] = useState(null)
-    const [zoomImgArr,  setZoomImgArr] = useState(null)
+    const [data, setData] = useState<dataProps>({
+        __v: '',
+    _id: '',
+    age: '',
+    breed: '',
+    data: '',
+    description: '',
+    gender: '',
+    jab: '',
+    mobile: '',
+    stiril: '',
+    stray: '',
+    type: '',
+    urls: []
+    })
+    const [imgArray, setImgArray] = useState<Array<object>>([])
+    const [zoomImgArr,  setZoomImgArr] = useState<IImageInfo[]>()
     const {id} = route.params
 
-    const [visible, setVisible] = useState(false)
-    const [loading, setLoading] = useState(false)
-    const [liked, setLiked] = useState(false)
-    const [isCreator, setIsCreator] = useState(false) 
-    const [imageModal, setImageModal] = useState(false)
+    const [visible, setVisible] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(false)
+    const [liked, setLiked] = useState<boolean>(false)
+    const [isCreator, setIsCreator] = useState<boolean>(false) 
+    const [imageModal, setImageModal] = useState<boolean>(false)
 
     const [number, setNumber] = useRecoilState(numberAtom)
     const [likedState, setLikedState] = useRecoilState(likedAtom)
@@ -64,7 +84,7 @@ function PostView({route, navigation}) {
                 setMobile(resultMobile)
                 setData(allData.data)
                 if(resultUrls) {
-                    for(i = 0; i < resultUrls.length; i++) {
+                    for(let i = 0; i < resultUrls.length; i++) {
                         urls.push({img: `${resultUrls[i]}`, title:'', text:''})
                         urlsZoom.push({url: `${resultUrls[i]}`})
                     }
@@ -78,7 +98,6 @@ function PostView({route, navigation}) {
                 }
                 setLoading(false)
             } catch(err) {
-                console.log('Here', err)
                 setLoading(false)
             }
         }
@@ -93,9 +112,10 @@ function PostView({route, navigation}) {
         }
         getData()
         checkLikes()
+        console.log('DATA TYPES HERE', data)
     }, [id, likedState])
 
-    function CarouselItem ({item, index}) {
+    function CarouselItem ({item} : any) {
     
         return(
             <TouchableOpacity style={{flex:1, alignItems:'center'}} onPress={() => setImageModal(true)}>
@@ -105,10 +125,10 @@ function PostView({route, navigation}) {
     }
 
     function likedPosts() {
-        let newLikes = [...likedState]
+        let newLikes : any = [...likedState]
 
         if(liked) {
-            let filtereLikes = newLikes.filter(item => item != id)
+            let filtereLikes = newLikes.filter((item: string) => item != id)
             setLikedState(filtereLikes)
             setLiked(!liked)
             saveLikes()
@@ -120,52 +140,6 @@ function PostView({route, navigation}) {
         }
     }
 
-    function typeDef () {
-        if(data.type === 'dog' && data.gender === 'Девочка') {
-            return 'Собака'
-        } else if (data.type === 'dog' && data.gender === 'Мальчик') {
-            return 'Пёс'
-        } else if (data.type === 'cat' && data.gender === 'Мальчик') {
-            return 'Кот'
-        } else if (data.type === 'cat' && data.gender === 'Девочка') {
-            return 'Кошка'
-        } 
-    }
-    function strayDef () {
-        if(data.stray === 'Домашний' && data.gender === 'Девочка') {
-            return 'Домашняя'
-        } else if (data.stray === 'Домашний' && data.gender === 'Мальчик') {
-            return 'Домашний'
-        } else if (data.stray === 'Уличный' && data.gender === 'Мальчик') {
-            return 'Уличный'
-        } else if (data.stray === 'Уличный' && data.gender === 'Девочка') {
-            return 'Уличная'
-        } 
-    }
-
-    function stirilDef () {
-        if(data.stiril === 'Стерильный' && data.gender === 'Девочка') {
-            return 'Стерильная'
-        } else if (data.stiril === 'Стерильный' && data.gender === 'Мальчик') {
-            return 'Стерильный'
-        } else if (data.stiril === 'Не стерильный' && data.gender === 'Мальчик') {
-            return 'Не стерильный'
-        } else if (data.stiril === 'Не стерильный' && data.gender === 'Девочка') {
-            return 'Не стерильная'
-        } 
-    }
-
-    function jabDef () {
-        if(data.jab === 'Привит' && data.gender === 'Девочка') {
-            return 'Привита'
-        } else if (data.jab === 'Привит' && data.gender === 'Мальчик') {
-            return 'Привит'
-        } else if (data.jab === 'Не привит' && data.gender === 'Мальчик') {
-            return 'Не Привит'
-        } else if (data.jab === 'Не привит' && data.gender === 'Девочка') {
-            return 'Не Привита'
-        } 
-    }
 
     async function saveLikes() {
             const saveLiked = await AsyncStorage.setItem('liked', JSON.stringify(likedState))
@@ -188,26 +162,18 @@ function PostView({route, navigation}) {
         try{
             const deletion = await axios.get(`${links.DELETE_POST}`+id)
            if(deletion.status == 200) {
-            navigation.navigate('Home')
+            navigation.navigate('AppTab', {
+                Screen : 'Home'
+            })
            }
-        } catch(err) {
+        } catch(err : any) {
             console.log(err.response)
         }
     }
-    
-/* async function addToFav() {
-    try {
-        const data = await axios.post(`http://10.0.2.2:3000/user/addFavor`, {number, favor: id, liked})
-        console.log(data)
-        setLiked(!liked)
-    } catch(err) {
-        console.log(err)
-    }
-} */
 
 return(
     <SafeAreaView style={{flex:1, backgroundColor: COLORS.bej}}>
-    <View style={[{flex:1, backgroundColor:COLORS.bej}, visible || loading && {opacity:0.5}]}>
+    <View style={[{flex:1, backgroundColor:COLORS.bej}, (visible || loading) && {opacity:0.5}]}>
         <FocusAwareStatusBar backgroundColor={COLORS.bej} barStyle='dark-content'/>
         <ModalPopUp visible={visible} number={mobile}>
             <TouchableOpacity onPress={() => setVisible(false)} style={{ width: 40, height: 40, justifyContent:'center', alignItems:'center'}}>
@@ -277,15 +243,15 @@ return(
             <View style={[styles.post_category_one_view, {paddingLeft:15}]}>
                 <View style={styles.post_category_text_container_view}>
                 <Octicon name='dot-fill' size={17} color={COLORS.blue}/>
-                <Text style={styles.post_category_text}>{strayDef()}</Text>
+                <Text style={styles.post_category_text}>{data? strayDef(data) : ''}</Text>
                 </View>
                 <View style={styles.post_category_text_container_view}>
                 <Octicon name='dot-fill' size={17} color={COLORS.blue}/>
-                <Text style={styles.post_category_text}>{stirilDef()}</Text>
+                <Text style={styles.post_category_text}>{data? stirilDef(data) : ''}</Text>
                 </View>
                 <View style={styles.post_category_text_container_view}>
                 <Octicon name='dot-fill' size={17} color={COLORS.blue}/>
-                <Text style={styles.post_category_text}>{jabDef()}</Text>
+                <Text style={styles.post_category_text}>{data? jabDef(data) : ''}</Text>
                 </View>
             </View>
             </View>

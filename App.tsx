@@ -11,21 +11,25 @@ import {
   Modal,
   View,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
+  LogBox
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import {NavigationContainer} from '@react-navigation/native'
 import AppDrawer from './Navigation/AppStack';
 import { RecoilRoot } from 'recoil'
-import NetInfo, {useNetInfo} from '@react-native-community/netinfo'
+import NetInfo from '@react-native-community/netinfo'
 import { styles } from './AllStyles'
 import SplashScreen from 'react-native-splash-screen'
 import 'react-native-gesture-handler'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { COLORS } from './assets/colors';
 
+LogBox.ignoreLogs(['ViewPropTypes will be removed'])
 
 const PERSISTENCE_KEY = 'NAVIGATION_STATE';
+
+interface showState {
+  show: boolean
+}
 
 function App () {
   const [isReady, setIsReady] = useState(false);
@@ -72,9 +76,9 @@ function App () {
     });
    }
 
-   const NoInternetModal = ({show}) => {
+   const NoInternetModal: React.FC<showState> = (item) => {
      return(
-       <Modal visible={show} transparent={true}>
+       <Modal visible={item.show} transparent={true}>
           <View style={styles.internet_modal_bg}>
             <View style={styles.internet_modal_container}>
               <View style={styles.internet_text_container}>
@@ -99,7 +103,7 @@ function App () {
   return (
     <RecoilRoot>
     <View style={[{flex:1, backgroundColor: 'transaprent'}, offline && {opacity: 0.3}]}>
-      <NoInternetModal show={offline}/>
+      <NoInternetModal show={offline} />
     <NavigationContainer
     initialState={initialState}
     onStateChange={(state) => AsyncStorage.setItem(PERSISTENCE_KEY, JSON.stringify(state))}>

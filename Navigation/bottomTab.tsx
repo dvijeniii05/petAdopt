@@ -2,8 +2,6 @@ import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import CreatePost from '../Screens/createPost';
 import HomeScreen from '../Screens/homeScreen';
-import SignInScreen from '../Screens/signInScreen';
-import SignUpScreen from '../Screens/signUpScreen';
 import {COLORS} from '../assets/colors'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import UserPosts from '../Screens/userPostsScreen'
@@ -12,9 +10,19 @@ import ProfileScreen from '../Screens/profile'
 import MessageCreator from '../Screens/messageCreator';
 import ForumScreen from '../Screens/forumScreen';
 
-const Tab = createBottomTabNavigator()
+export type TabParams = {
+    Home : undefined,
+    Create : undefined,
+    Forum : undefined,
+    UserPosts: undefined,
+    NotificationsScreen: undefined,
+    ProfileScreen : undefined,
+    MessageCreator : undefined
+}
 
-function BottomTab ({navigation}) {
+const Tab = createBottomTabNavigator<TabParams>()
+
+function BottomTab () {
     return(
         <Tab.Navigator screenOptions={{
             headerShown: false,

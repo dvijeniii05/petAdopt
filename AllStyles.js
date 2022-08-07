@@ -556,14 +556,13 @@ const styles = StyleSheet.create ({
           width: '85%',
           height: '85%',
           backgroundColor:COLORS.dark,
-          borderRadius:10
+          borderRadius:10,
+          justifyContent:'center'
       },
       internet_button_text:{
-          flex:1,
-          textAlign:'center',
-          textAlignVertical:'center',
-          fontSize:20,
-          color:'white'
+        color: 'white',
+        fontSize: 20,
+        textAlign:'center'
       }
 
     

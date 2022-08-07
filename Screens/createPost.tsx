@@ -9,14 +9,14 @@ import {
     FlatList,
     Dimensions,
     ActivityIndicator,
-    Keyboard,
-    TouchableWithoutFeedback
+    Alert,
+    ListRenderItem
 } from 'react-native'
 import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { styles } from '../AllStyles'
 import DropDownPicker from 'react-native-dropdown-picker'
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker'
+import {Asset, launchImageLibrary} from 'react-native-image-picker'
 import AntIcon from 'react-native-vector-icons/AntDesign'
 import {ITEM_WIDTH} from './postView'
 import axios from 'axios'
@@ -29,123 +29,42 @@ import { COLORS } from '../assets/colors'
 import FocusAwareStatusBar from '../Components/FocusAwareStatusBar'
 import { numberAtom } from '../atoms/numberAtom'
 import { useRecoilState } from 'recoil'
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
+import { BottomTabScreenProps, useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import HideKeyboard from '../Components/HideKeyboard';
+import { TabParams } from '../Navigation/bottomTab';
+import { type, gender, age, stray, stiril, jab } from '../Components/constants/categoryValues';
 
 const {width: WIDTH, height: HEIGHT} = Dimensions.get('window')
 
-const HideKeyboard = ({children}) => {
-    return(
-    <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
-      {children}
-    </TouchableWithoutFeedback>
-    )
+type Props = BottomTabScreenProps<TabParams, 'Create'>
+
+interface itemType {
+    uri: string
 }
 
-function CreatePost({navigation}) {
+function CreatePost({navigation} : Props) {
     const[number, setNumber] = useRecoilState(numberAtom)
+    
     const[typeOpen, setTypeOpen] =useState(false)
     const[genderOpen, setGenderOpen] = useState(false)
     const[ageOpen, setAgeOpen] = useState(false)
     const[strayOpen, setStrayOpen] = useState(false)
     const[stirilOpen, setStirilOpen] = useState(false)
     const[jabOpen, setJabOpen] = useState(false)
-    const[typeValue, setTypeValue] =useState(null)
-    const[strayValue, setStrayValue] = useState(null)
-    const[stirilValue, setStirilValue] = useState(null)
-    const[jabValue, setJabValue] = useState(null)
-    const[breedValue, setBreedValue] = useState(null) // Change null to something else, possibly [] to get proper error from server when left empty
-    const[ageValue, setAgeValue] = useState(null)
-    const[genderValue, setGenderValue] = useState(null)
-    const[desc, setDesc] = useState([]) // Change null to something else, possibly [] to get proper error from server when left empty
+    const[typeValue, setTypeValue] = useState<any>(null)
+    const[strayValue, setStrayValue] = useState<any>(null)
+    const[stirilValue, setStirilValue] = useState<any>(null)
+    const[jabValue, setJabValue] = useState<any>(null)
+    const[breedValue, setBreedValue] = useState<string>('') // Change null to something else, possibly [] to get proper error from server when left empty
+    const[ageValue, setAgeValue] = useState<any>(null)
+    const[genderValue, setGenderValue] = useState<any>(null)
+    const[desc, setDesc] = useState('') // Change null to something else, possibly [] to get proper error from server when left empty
 
     const[loading, setLoading] = useState(false)
 
-    const[images, setImages] = useState([])
-    const textRef = useRef()
-
-    const type = [{
-        label: '😺',
-        value: 'cat'
-    }, {
-        label:'🐶',
-        value:'dog'
-    }]
-    const gender = [{
-        label: 'мальчик',
-        value: 'Мальчик'
-    }, {
-        label:'девочка',
-        value:'Девочка'
-    }]
-    const age = [{
-        label: 'до 1 года',
-        value: 'До 1 года'
-    }, {
-        label:'1 год',
-        value:'1 год'
-    },
-    {
-        label: '2 года',
-        value: '2 года'
-    },
-    {
-        label: '3 года',
-        value: '3 года'
-    },
-    {
-        label: '4 года',
-        value: '4 года'
-    },
-    {
-        label: '5 лет',
-        value: '5 лет'
-    },
-    {
-        label: '6 лет',
-        value: '6 лет'
-    },
-    {
-        label: '7 лет',
-        value: '7 лет'
-    },
-    {
-        label: '8 лет',
-        value: '8 лет'
-    },
-    {
-        label: '9 лет',
-        value: '9 лет'
-    },
-    {
-        label: '10 лет',
-        value: '10 лет'
-    },
-    {
-        label: '10 + лет',
-        value: '10 + лет'
-    },]
-    const stray = [{
-        label: 'да',
-        value: 'Уличный'
-    }, {
-        label:'нет',
-        value:'Домашний'
-    }]
-    const stiril = [{
-        label: 'да',
-        value: 'Стерильный'
-    }, {
-        label:'нет',
-        value:'Не стерильный'
-    }]
-    const jab = [{
-        label: 'да',
-        value: 'Привит'
-    }, {
-        label:'нет',
-        value:'Не привит'
-    }]
+    const[images, setImages] = useState<any>([])
+    const textRef = useRef<TextInput>(null)
 
     const tabBarHeight = useBottomTabBarHeight()
     
@@ -156,23 +75,24 @@ function CreatePost({navigation}) {
             setTypeValue(null)
             setAgeValue(null)
             setJabValue(null)
-            setBreedValue(null)
+            setBreedValue('')
             setStrayValue(null)
             setGenderValue(null)
             setStirilValue(null)
-            setDesc(null)
+            setDesc('')
             setImages([])
-            textRef.current.clear()
+            textRef.current?.clear()
             }
         }, [])
     )
     
     async function getImages() {
 
-        const result = await launchImageLibrary ({mediaType:'photo',selectionLimit:2, maxWidth:ITEM_WIDTH, maxHeight:ITEM_WIDTH, quality:0.6})
+        const result = await launchImageLibrary ({mediaType:'photo',selectionLimit:2, maxWidth:ITEM_WIDTH, maxHeight:ITEM_WIDTH, quality:0.8})
         if(result.didCancel) {
             setImages([])
         } else {
+            console.log('RESULTS ARE HERE!', result, 'ASSETS ARE HERE!!!', result.assets)
             setImages(result.assets)
         }
         
@@ -180,38 +100,63 @@ function CreatePost({navigation}) {
 
     async function sendPost() {
         
-        const jwt = await AsyncStorage.getItem('jwt')
+        if(images.length === 2) {
+            const jwt = await AsyncStorage.getItem('jwt')
 
-       try{ 
-           const result = await axios.post(`${links.ALL_POSTS}`, {
-            type: typeValue,
-            breed: breedValue,
-            gender: genderValue,
-            age: ageValue,
-            stray: strayValue,
-            stiril: stirilValue,
-            jab: jabValue,
-            description: desc,
-            urls: await sendImage(),
-            mobile: number
-        }, {
-            headers: {
-                'auth-token' : jwt
-            }
-        }) 
-        setLoading(false)
-        navigation.navigate('Home')
-    } catch(err) {
-        setLoading(false)
-        alert(err.response.data)
-        console.log(err)
-    }
+            try{ 
+                await axios.post(`${links.ALL_POSTS}`, {
+                 type: typeValue,
+                 breed: breedValue,
+                 gender: genderValue,
+                 age: ageValue,
+                 stray: strayValue,
+                 stiril: stirilValue,
+                 jab: jabValue,
+                 description: desc,
+                 urls: await sendImage(),
+                 mobile: number
+             }, {
+                 headers: {
+                     'auth-token' : jwt? jwt : ''
+                 }
+             }) 
+             setLoading(false)
+             navigation.navigate('Home')
+         } catch(err: any) {
+             setLoading(false)
+             Alert.alert(
+                 'Внимание',
+                     err.response.data,
+                     [
+                         {
+                             text: 'Понятно',
+                             style: 'default'
+                         }
+                     ]
+             )
+             console.log(err)
+         }
+
+        } else {
+            Alert.alert(
+                'Внимание',
+                    'Необходимо добавить 2 фотографии',
+                    [
+                        {
+                            text: 'Понятно',
+                            style: 'default',
+                            onPress: () => setLoading(false)
+                        }
+                    ]
+            )
+        }
+    
     }
 
     async function sendImage() {
         if(images) {
-            const dbUrls = []
-            for(i = 0; i < images.length; i++ ) {
+            const dbUrls: string[] = []
+            for(let i = 0; i < images.length; i++ ) {
                 
                 const unicode = uuidv4()
                 const locRef = storage().ref(`${unicode}`)
@@ -227,7 +172,7 @@ function CreatePost({navigation}) {
         }
     } 
 
-    const renderItem = ({item}) => {
+    const renderItem: ListRenderItem<itemType> = ({item}) => {
         return(
             <View style={{ alignItems:'center'}}>
                 <Image source={{uri:item.uri}} 
@@ -251,15 +196,14 @@ function CreatePost({navigation}) {
             </View>
             
             <KeyboardAwareScrollView
-            keyboardShouldPersistTaps='always' 
-            behavior={Platform.OS === 'ios' ? 'padding' : null}
+            keyboardShouldPersistTaps='always'
             style={{flex:1}}>
             <HideKeyboard>
             <View style={[styles.post_middle_container, {height: HEIGHT-tabBarHeight-45}]}>
                 <Text>{/* 44 is the TopPadding for SafeAreaView */}</Text>
                 <View style={[styles.post_create_image_container, {marginBottom:10}]}>
                     
-                    {images.length == 0  &&
+                    {images?.length == 0  &&
                     <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
                     <TouchableOpacity 
                     style={styles.add_pic_button}
@@ -270,7 +214,7 @@ function CreatePost({navigation}) {
                     <Text style={{fontSize:20, top:10, color:COLORS.dark}}>Добавить 2 фотографии</Text>
                     </View>
                      }
-                    {images.length == 1 &&
+                    {images?.length == 1 &&
                     <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
                     <TouchableOpacity 
                     style={styles.add_pic_button}
@@ -282,7 +226,7 @@ function CreatePost({navigation}) {
                     </View>
 
                     }
-                    {images[1] &&
+                    {(images && images[1]) &&
                     <View style={{flex:1}}>
                     <Text style={{fontSize:25, top:10, textAlign:'center'}}>Фотографии добавлены</Text>
                     <View style={{width:WIDTH, height:ITEM_WIDTH, alignItems:'center', top:20}}>
@@ -295,12 +239,12 @@ function CreatePost({navigation}) {
                 </View>
                 <View style={styles.post_info_container}>
                     <View style={styles.post_textinput_container}>
-                    <TextInput
-                    placeholder='Порода'
-                    onChangeText={setBreedValue}
-                    value={breedValue}
-                    style={styles.post_category_textinput}
-                    placeholderTextColor='black'/>
+                        <TextInput
+                        placeholder='Порода'
+                        onChangeText={setBreedValue}
+                        value={breedValue}
+                        style={styles.post_category_textinput}
+                        placeholderTextColor='black'/>
                     </View>
             <View style={[styles.post_category_container, {flexDirection:'row'}]}>
             <View style={styles.post_category_one_container}>

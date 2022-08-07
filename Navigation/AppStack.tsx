@@ -1,31 +1,49 @@
-import React, {useEffect} from 'react'
-import { NavigationContainer } from '@react-navigation/native'
-import { createNativeStackNavigator } from '@react-navigation/native-stack'
+import React, {useEffect} from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import AuthScreen from '../Screens/authScreen';
-import AvatarPick from '../Screens/avatarPick'
+import AvatarPick from '../Screens/avatarPick';
 import SignInScreen from '../Screens/signInScreen';
 import SignUpScreen from '../Screens/signUpScreen';
 import DrawerContent from './drawerContent';
 import BottomTab from './bottomTab';
-import PostView from '../Screens/postView'
+import PostView from '../Screens/postView';
 
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import {GET_USER, ADD_LIKED} from '@env'
-import { links } from '../Components/links'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { links } from '../Components/links';
 import axios from 'axios';
 import { avatarAtom } from '../atoms/avatarAtom';
 import { realnameAtom } from '../atoms/realnameAtom';
 import { numberAtom } from '../atoms/numberAtom';
 import { emailAtom } from '../atoms/emailAtom';
-import { likedAtom } from '../atoms/likedAtom'
+import { likedAtom } from '../atoms/likedAtom';
 import { useRecoilState } from 'recoil';
 
-const Stack = createNativeStackNavigator()
-const Drawer = createDrawerNavigator()
-const Tab = createBottomTabNavigator()
+export type StackParams = {
+  Auth : undefined,
+  AvatarPick : undefined,
+  SignUpScreen : {
+    url: object,
+    id: string
+  },
+  SignInScreen : undefined,
+  Drawer : {
+    Screen: string
+  }
+}
+
+export type DrawerParams = {
+  AppTab : {
+    Screen :string
+  },
+  PostView : {
+    id: string
+  }
+}
+
+const Stack = createNativeStackNavigator<StackParams>()
+const Drawer = createDrawerNavigator<DrawerParams>()
 
 function DrawerStack() {
   return(
@@ -85,7 +103,7 @@ function AppDrawer () {
       headerShown: false
     }}>
       <Stack.Screen name='Auth' component={AuthScreen}/>
-      <Stack.Screen name='AvatarPick' component={AvatarPick}/>
+      <Stack.Screen name='AvatarPick' component={AvatarPick} options={{gestureEnabled: true}}/>
       <Stack.Screen name='SignUpScreen' component={SignUpScreen}/>
       <Stack.Screen name='SignInScreen' component={SignInScreen}/>
       <Stack.Screen name='Drawer' component={DrawerStack} options={{gestureEnabled: false}}/>

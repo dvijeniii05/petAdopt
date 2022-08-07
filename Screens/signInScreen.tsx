@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {PropsWithChildren, useState} from 'react'
 import {
     Text,
     View,
@@ -23,24 +23,20 @@ import { emailAtom } from '../atoms/emailAtom';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import Icon from 'react-native-vector-icons/Entypo'
+import { useNavigation } from '@react-navigation/native';
+import { StackParams } from '../Navigation/AppStack';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import HideKeyboard from '../Components/HideKeyboard';
 
-const {width: WIDTH, height: HEIGHT} = Dimensions.get('window')
+const SignInScreen: React.FC = () => {
+    const navigation = useNavigation<NativeStackNavigationProp<StackParams>>()
 
-const HideKeyboard = ({children}) => {
-    return(
-    <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
-      {children}
-    </TouchableWithoutFeedback>
-    )
-}
-
-function SignInScreen ({navigation}) {
     const [emailUser, setEmailUser] = useRecoilState(emailAtom)
-    const [loading, setLoading] = useState(false)
-    const [securePass, setSecurePass] = useState(true)
-    const [eyeState, setEyeState] = useState('eye-with-line')
-    const [email, setEmail] = useState(null)
-    const [password, setPassword] = useState(null)
+    const [loading, setLoading] = useState<boolean>(false)
+    const [securePass, setSecurePass] = useState<boolean>(true)
+    const [eyeState, setEyeState] = useState<string>('eye-with-line')
+    const [email, setEmail] = useState<string>('')
+    const [password, setPassword] = useState<string>('')
 
     function validation() {
         if(email && password) {
@@ -63,7 +59,7 @@ function SignInScreen ({navigation}) {
             setEmailUser(email)
             setLoading(false)
             navigation.navigate('Drawer', {Screen: 'AppTab'})
-        } catch(err) {
+        } catch(err: any) {
             setLoading(false)
             alert(err.response.data)
         }
@@ -77,7 +73,6 @@ function SignInScreen ({navigation}) {
         <HideKeyboard>
         <KeyboardAwareScrollView 
             keyboardShouldPersistTaps='always'
-            behavior={Platform.OS === 'ios' ? 'padding' : null}
             style={[{flex:1, backgroundColor: COLORS.bej}, loading && {opacity: 0.2}]}>
             <FocusAwareStatusBar backgroundColor={COLORS.dark} barStyle='light-content'/>
             <View style={styles.loader}>
@@ -133,3 +128,7 @@ function SignInScreen ({navigation}) {
 }
 
 export default SignInScreen
+
+function alert(arg0: string) {
+    throw new Error('Function not implemented.');
+}

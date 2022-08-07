@@ -4,7 +4,8 @@ import {
     Text,
     FlatList,
     Image,
-    TouchableOpacity
+    TouchableOpacity,
+    ListRenderItem
 } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import FocusAwareStatusBar from '../Components/FocusAwareStatusBar'
@@ -13,36 +14,46 @@ import {COLORS} from '../assets/colors'
 import axios from 'axios'
 import { links } from '../Components/links'
 import { useFocusEffect } from '@react-navigation/native'
-import { useRecoilState } from 'recoil'
-import { likedAtom } from '../atoms/likedAtom'
+import {useRecoilState} from 'recoil'
+import { numberAtom } from '../atoms/numberAtom';
+import { DrawerScreenProps } from '@react-navigation/drawer'
+import { DrawerParams } from '../Navigation/AppStack'
 
-function ProfileScreen({navigation}) {
+type Props = DrawerScreenProps<DrawerParams, 'AppTab'>
 
-    const [data, setData] = useState()
-    const [liked, setLiked] = useRecoilState(likedAtom)
+interface ItemType {
+    _id: string,
+    urls: string[],
+    gender: string,
+    age: number,
+    stray: string
+}
+
+function UserPosts({navigation}: Props) {
+
+    const [data, setData] = useState(null)
+    const [mobile, setMobile] = useRecoilState(numberAtom)
 
     useFocusEffect(
         React.useCallback( () => {
     
             async function getAll() {
-                let allData = []
-                for(i = 0; i < liked.length; i++) {
-                    try{
-                    const getData = await axios.get(`${links.ALL_POSTS}`+`${liked[i]}`)
-                    allData.push(getData.data)
-                    } catch(err) {
-                        console.log(err)
-                    }
+                try{
+                    const allData = await axios.get(`${links.USER_POSTS}`+mobile)
+                    console.log(allData.data)
+                    console.log('NUMBER', mobile)
+                    setData(allData.data)
+                } catch(err) {
+                    console.log(err)
                 }
-                setData(allData)
             }
     
             getAll()
     
-        }, [liked])
+        }, [])
     )
 
-    const renderItem = ({item}) => {
+    const renderItem : ListRenderItem<ItemType> = ({item}) => {
         return(
             <View >
             <TouchableOpacity 
@@ -66,20 +77,21 @@ function ProfileScreen({navigation}) {
     return(
         <SafeAreaView style={styles.home}>
         <FocusAwareStatusBar backgroundColor={COLORS.bej} barStyle='dark-content'/>
-        <View style={styles.home_middle_container}>
-                <View style={{top:20}}><Text style={{fontSize:25, color:COLORS.darkGreen}}>Ваши Фавориты</Text></View>
+            <View style={styles.home_middle_container}>
+                <View style={{top:20}}><Text style={{fontSize:25, color:COLORS.darkGreen}}>Ваши Обьявления</Text></View>
             </View>
+        
             <View style={styles.home_bottom_container}>
-            <FlatList
-            data={data}
-            renderItem={renderItem}
-            numColumns={2}
-            horizontal={false}
-            keyExtractor={(item) => item._id}
-            />
+                <FlatList
+                data={data}
+                renderItem={renderItem}
+                numColumns={2}
+                horizontal={false}
+                keyExtractor={(item) => item._id}
+                />
             </View>
         </SafeAreaView>
     )
 }
 
-export default ProfileScreen
+export default UserPosts

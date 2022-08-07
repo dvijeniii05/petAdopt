@@ -1,3 +1,5 @@
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React from 'react';
 import {
     View,
@@ -5,12 +7,13 @@ import {
     TouchableOpacity,
     Image,
 } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context';
 import {styles} from '../AllStyles'
 import { COLORS } from '../assets/colors';
 import FocusAwareStatusBar from '../Components/FocusAwareStatusBar'
+import { StackParams } from '../Navigation/AppStack';
 
-function AuthScreen ({navigation}) {
+const AuthScreen: React.FC = () => {
+    const navigation =  useNavigation<NativeStackNavigationProp<StackParams>>()
     return (
 
     <View style={styles.background_container}>
@@ -35,7 +38,6 @@ function AuthScreen ({navigation}) {
                 <Text style={styles.sign_in_text}>Войти</Text>
             </TouchableOpacity>
         </View>
-        
     </View>
     
     )
