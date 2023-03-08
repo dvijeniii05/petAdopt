@@ -8,11 +8,11 @@
 
 import React, {useEffect, useState} from 'react';
 import {
-  SafeAreaView,
   Modal,
   View,
   Text,
-  TouchableOpacity
+  TouchableOpacity,
+  LogBox
 } from 'react-native';
 import {NavigationContainer} from '@react-navigation/native'
 import AppDrawer from './Navigation/AppStack';
@@ -22,7 +22,9 @@ import { styles } from './AllStyles'
 import SplashScreen from 'react-native-splash-screen'
 import 'react-native-gesture-handler'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import VersionCheck from 'react-native-version-check'
 
+LogBox.ignoreLogs(['ViewPropTypes will be removed']);
 
 const PERSISTENCE_KEY = 'NAVIGATION_STATE';
 
@@ -38,6 +40,8 @@ function App () {
      if(!isReady) {
        restore()
      }
+
+     checkVersion()
    }, [isReady])
 
    function netInfo() {
@@ -46,6 +50,34 @@ function App () {
      })
      return () => infoSub()
    }
+
+   const checkVersion = async () => {
+    try {
+      let updateNeeded = await VersionCheck.needUpdate();
+      if (updateNeeded && updateNeeded.isNeeded) {
+        Alert.alert(
+          'Доступна новая версия',
+          'Мы добавили новые функции и исправили некотороые критические ошибки. Для того чтобы принять изменения, пожалуйста обновите приложение.',
+          [
+            {
+              text: 'Обновить',
+              onPress: () => {
+                BackHandler.exitApp();
+                Linking.openURL(updateNeeded.storeUrl);
+              },
+            },
+          ],
+        );
+      }
+    } catch {}
+  };
+
+  function netInfo() {
+    const infoSub = NetInfo.addEventListener(state => {
+      setOffline(!state.isConnected);
+    });
+    return () => infoSub();
+  }
 
    async function restore() {
     try {
@@ -97,15 +129,14 @@ function App () {
 
   return (
     <RecoilRoot>
-    <SafeAreaView style={[{flex:1}, offline && {opacity: 0.3}]}>
+    <View style={[{flex:1, backgroundColor: 'transaprent'}, offline && {opacity: 0.3}]}>
       <NoInternetModal show={offline}/>
     <NavigationContainer
     initialState={initialState}
-    onStateChange={(state) => AsyncStorage.setItem(PERSISTENCE_KEY, JSON.stringify(state))}
-    >
+    onStateChange={(state) => AsyncStorage.setItem(PERSISTENCE_KEY, JSON.stringify(state))}>
       <AppDrawer/>
     </NavigationContainer>
-    </SafeAreaView>
+    </View>
     </RecoilRoot>
   )
 }

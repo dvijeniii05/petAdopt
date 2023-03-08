@@ -8,8 +8,11 @@ import {
     TouchableOpacity,
     Pressable,
     ActivityIndicator,
-    Alert
+    Alert,
+    Modal
 } from 'react-native'
+import ImageViewer from 'react-native-image-zoom-viewer'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { styles } from '../AllStyles'
 import ModalPopUp from '../Components/modalPopUp'
 import MatIcon from 'react-native-vector-icons/MaterialIcons'
@@ -29,49 +32,44 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const SLIDER_WIDTH = Dimensions.get('window').width 
 export const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.6)
+const {width: WIDTH, height: HEIGHT} = Dimensions.get('window')
 
-function CarouselItem ({item, index}) {
-    
-    return(
-        <View style={{flex:1, alignItems:'center'}}>
-            <Image source={{uri:`${item.img}`}} resizeMode='contain' style={styles.post_image}/>
-        </View>
-    )
-}
 function PostView({route, navigation}) {
     const ref = useRef(null)
     const [mobile, setMobile] = useState(null)
     const [data, setData] = useState([])
     const [imgArray, setImgArray] = useState(null)
+    const [zoomImgArr,  setZoomImgArr] = useState(null)
     const {id} = route.params
 
     const [visible, setVisible] = useState(false)
     const [loading, setLoading] = useState(false)
     const [liked, setLiked] = useState(false)
-    const [isCreator, setIsCreator] = useState(false) 
+    const [isCreator, setIsCreator] = useState(false)
+    const [imageModal, setImageModal] = useState(false)
 
     const [number, setNumber] = useRecoilState(numberAtom)
     const [likedState, setLikedState] = useRecoilState(likedAtom)
 
     useEffect(()=> {
-        console.log('State check', likedState)
         async function getData() {
             setLoading(true)
             try{ 
                 let urls = []
+                let urlsZoom = []
                 const allData = await axios.get(`${links.ALL_POSTS}`+id)
                 const resultUrls = allData.data.urls
                 const resultMobile = allData.data.mobile
-                console.log(allData.data)
-                console.log(resultMobile)
                 setMobile(resultMobile)
                 setData(allData.data)
                 if(resultUrls) {
                     for(i = 0; i < resultUrls.length; i++) {
                         urls.push({img: `${resultUrls[i]}`, title:'', text:''})
+                        urlsZoom.push({url: `${resultUrls[i]}`})
                     }
                 }
                 setImgArray(urls)
+                setZoomImgArr(urlsZoom)
                 if(number == resultMobile) {
                     setIsCreator(true)
                 } else {
@@ -86,7 +84,6 @@ function PostView({route, navigation}) {
         function checkLikes() {
             let newLikes = [...likedState]
             let filteredLikes = newLikes.filter(item => item == id)
-            console.log('Filtered likes',filteredLikes)
             if(filteredLikes[0]) {
                 setLiked(true)
             } else {
@@ -96,6 +93,16 @@ function PostView({route, navigation}) {
         getData()
         checkLikes()
     }, [id, likedState])
+
+    function CarouselItem ({item, index}) {
+
+        return(
+            <TouchableOpacity style={{flex:1, alignItems:'center'}} onPress={() => setImageModal(true)}>
+                <Image source={{uri:`${item.img}`}} resizeMode='contain' style={styles.post_image}/>
+            </TouchableOpacity>
+        )
+    }
+
 
     function likedPosts() {
         let newLikes = [...likedState]
@@ -111,6 +118,42 @@ function PostView({route, navigation}) {
             setLiked(!liked)
             saveLikes()
         }
+    }
+
+    function strayDef () {
+        if(data.stray === 'Домашний' && data.gender === 'Девочка') {
+            return 'Домашняя'
+        } else if (data.stray === 'Домашний' && data.gender === 'Мальчик') {
+            return 'Домашний'
+        } else if (data.stray === 'Уличный' && data.gender === 'Мальчик') {
+            return 'Уличный'
+        } else if (data.stray === 'Уличный' && data.gender === 'Девочка') {
+            return 'Уличная'
+        } 
+    }
+
+    function stirilDef () {
+        if(data.stiril === 'Стерильный' && data.gender === 'Девочка') {
+            return 'Стерильная'
+        } else if (data.stiril === 'Стерильный' && data.gender === 'Мальчик') {
+            return 'Стерильный'
+        } else if (data.stiril === 'Не стерильный' && data.gender === 'Мальчик') {
+            return 'Не стерильный'
+        } else if (data.stiril === 'Не стерильный' && data.gender === 'Девочка') {
+            return 'Не стерильная'
+        } 
+    }
+
+    function jabDef () {
+        if(data.jab === 'Привит' && data.gender === 'Девочка') {
+            return 'Привита'
+        } else if (data.jab === 'Привит' && data.gender === 'Мальчик') {
+            return 'Привит'
+        } else if (data.jab === 'Не привит' && data.gender === 'Мальчик') {
+            return 'Не Привит'
+        } else if (data.jab === 'Не привит' && data.gender === 'Девочка') {
+            return 'Не Привита'
+        } 
     }
 
     async function saveLikes() {
@@ -152,6 +195,7 @@ function PostView({route, navigation}) {
 } */
 
 return(
+    <SafeAreaView style={{flex:1, backgroundColor: COLORS.bej}}>
     <View style={[{flex:1, backgroundColor:COLORS.bej}, visible || loading && {opacity:0.5}]}>
         <FocusAwareStatusBar backgroundColor={COLORS.bej} barStyle='dark-content'/>
         <ModalPopUp visible={visible} number={mobile}>
@@ -159,6 +203,13 @@ return(
             <Icon name='cross' size={30} color={COLORS.dark}/>
             </TouchableOpacity>
         </ModalPopUp>
+        <Modal visible={imageModal} transparent={true}>
+            <ImageViewer 
+                imageUrls={zoomImgArr}
+                enableSwipeDown={true}
+                onSwipeDown={()=>setImageModal(false)}
+                enableImageZoom={true}/>
+        </Modal>
         <View style={styles.loader}>
             <ActivityIndicator
             animating={loading}
@@ -188,11 +239,18 @@ return(
         </View> 
         <View style={styles.post_info_container}>
             <View style={[styles.post_category_container, {flex:1.4}]}>
-            <View style={styles.post_category_one_container}>
+                <View style={{flex:1, justifyContent:'center', alignItems:'center', top:5}}>
+                    <View style={[styles.post_category_text_container_view]}>
+                        <Octicon name='dot-fill' size={17} color={COLORS.blue}/>
+                        <Text style={styles.post_category_text}>{data.breed}</Text>
+                    </View>
+                </View>
+                <View style={{flex:4, flexDirection:'row'}}>
+                <View style={styles.post_category_one_container}>
             <View style={styles.post_category_one_view}>
                 <View style={styles.post_category_text_container_view}>
-                <Octicon name='dot-fill' size={17} color={COLORS.blue}/>
-                <Text style={styles.post_category_text}>{data.breed}</Text>
+                <Icon name='phone' size={17} color={COLORS.blue}/>
+                <Text style={styles.post_category_text}>{data.mobile}</Text>
                 </View>
                 <View style={styles.post_category_text_container_view}>
                 <Octicon name='dot-fill' size={17} color={COLORS.blue}/>
@@ -208,18 +266,20 @@ return(
             <View style={[styles.post_category_one_view, {paddingLeft:15}]}>
                 <View style={styles.post_category_text_container_view}>
                 <Octicon name='dot-fill' size={17} color={COLORS.blue}/>
-                <Text style={styles.post_category_text}>{data.stray}</Text>
+                <Text style={styles.post_category_text}>{strayDef()}</Text>
                 </View>
                 <View style={styles.post_category_text_container_view}>
                 <Octicon name='dot-fill' size={17} color={COLORS.blue}/>
-                <Text style={styles.post_category_text}>{data.stiril}</Text>
+                <Text style={styles.post_category_text}>{stirilDef()}</Text>
                 </View>
                 <View style={styles.post_category_text_container_view}>
                 <Octicon name='dot-fill' size={17} color={COLORS.blue}/>
-                <Text style={styles.post_category_text}>{data.jab}</Text>
+                <Text style={styles.post_category_text}>{jabDef()}</Text>
                 </View>
             </View>
             </View>
+                </View>
+           
             </View>
             <View style={styles.post_text_container}>
                 <ScrollView style={styles.post_text_scroll}>
@@ -229,10 +289,14 @@ return(
         </View>
         </View>
         <View style={styles.post_bottom_container}>
-            {isCreator && 
+        {isCreator ? 
             <TouchableOpacity style={styles.post_delete_button} onPress={() => alertPost()}>
                 <Feather name='trash-2' color={COLORS.dark} size={35}/>
-            </TouchableOpacity>
+            </TouchableOpacity> 
+            :
+            <TouchableOpacity style={styles.post_delete_button} onPress={() => Linking.openURL(`tel://${mobile}`)}>
+                <Feather name='phone-call' color={COLORS.dark} size={35}/>
+            </TouchableOpacity> 
             }
             <TouchableOpacity style={styles.post_buttons} onPress={() => setVisible(true)}>
                 <Text style={styles.post_buttons_text}>Забрать домой!</Text>
@@ -242,6 +306,7 @@ return(
             </Pressable>
         </View>
     </View>
+    </SafeAreaView>
 )
 }
 

@@ -5,17 +5,19 @@ import {
     Image,
     TouchableOpacity,
     TouchableWithoutFeedback,
-    TextInput,
+    Alert,
     FlatList,
     LogBox,
     BackHandler
 } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { styles } from '../AllStyles'
 import axios from 'axios'
 import { links } from '../Components/links'
 import { useFocusEffect } from '@react-navigation/native'
 import { COLORS } from '../assets/colors'
 import FocusAwareStatusBar from '../Components/FocusAwareStatusBar'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 LogBox.ignoreLogs(['Encountered two children with the same key, ...'])
 
@@ -43,14 +45,14 @@ useFocusEffect(
         }
 
         getAll()
-
+        showNewFeatureAlert()
     }, [])
 )
 
-/* useEffect(() => {   //ADD THIS ONCE FINISHED WITH APP TO PREVENT GOING BACK FROM HOME SCREEN!!!
+ useEffect(() => {   //ADD THIS ONCE FINISHED WITH APP TO PREVENT GOING BACK FROM HOME SCREEN!!!
     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => true)
     return () => backHandler.remove()
-}, []) */   
+}, [])   
 
 async function filterByType (type) {
     try {
@@ -82,11 +84,29 @@ async function filterByType (type) {
             </View>
         )
     }
+
+    const showNewFeatureAlert = async () => {
+        const newFeatureStored = await AsyncStorage.getItem('newFeature');
+        if (newFeatureStored == null) {
+          Alert.alert(
+            'Новый экран!🚀',
+            'Теперь вы можете увидеть список некоторых приютов/фондов помощи для животных в Баку. Нажмите на иконку РУПОР - 📢  в нижней консоли навигации. Давайте поможем животным вместе!',
+            [
+              {
+                text: 'Понятно',
+                style: 'default',
+                onPress: () => {
+                  AsyncStorage.setItem('newFeature', 'seen');
+                },
+              },
+            ],
+          );
+        }
+      };
     
     return (
         <HideKeyboard>
-        <View style={{flex:1}}>
-        <View style={styles.home}>
+        <SafeAreaView style={{flex:1, backgroundColor: COLORS.bej}} edges={['top']}>
         <FocusAwareStatusBar backgroundColor={COLORS.bej} barStyle='dark-content'/>
             <View style={styles.home_middle_container}>
                 <View style={styles.home_category_container}>
@@ -98,7 +118,7 @@ async function filterByType (type) {
                 </View>
                 <View style={styles.home_category_container}>
                 <TouchableOpacity
-                onPress={() => filterByType('all')}
+                onPress={() => filterByType('')}
                 style={styles.home_category_pick}>
                     <Image source={require('../assets/pets.png')} resizeMode='contain' style={styles.category_image}/>
                 </TouchableOpacity>
@@ -117,11 +137,12 @@ async function filterByType (type) {
             renderItem={renderItem}
             numColumns={2}
             horizontal={false}
+            showsVerticalScrollIndicator={false}
+            directionalLockEnabled={true}
             keyExtractor={(item) => item._id}
             />
             </View>
-        </View>
-        </View>
+        </SafeAreaView>
         </HideKeyboard>
     )
 }

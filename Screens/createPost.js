@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useRef, useState} from 'react'
 import {
     View,
     Text,
@@ -10,8 +10,12 @@ import {
     Dimensions,
     ActivityIndicator,
     KeyboardAvoidingView,
-    StatusBar
+    StatusBar,
+    Keyboard,
+    TouchableWithoutFeedback
 } from 'react-native'
+import { useFocusEffect } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context'
 import { styles } from '../AllStyles'
 import DropDownPicker from 'react-native-dropdown-picker'
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker'
@@ -22,7 +26,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import 'react-native-get-random-values'
 import { v4 as uuidv4 } from 'uuid';
 import storage from '@react-native-firebase/storage';
-import {ALL_POSTS} from '@env'
 import { links } from '../Components/links'
 import { COLORS } from '../assets/colors'
 import FocusAwareStatusBar from '../Components/FocusAwareStatusBar'
@@ -33,8 +36,16 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 const {width: WIDTH, height: HEIGHT} = Dimensions.get('window')
 
+const HideKeyboard = ({children}) => {
+    return(
+    <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
+      {children}
+    </TouchableWithoutFeedback>
+    )
+}
+
 function CreatePost({navigation}) {
-    const [number, setNumber] = useRecoilState(numberAtom)
+    const[number, setNumber] = useRecoilState(numberAtom)
     const[typeOpen, setTypeOpen] =useState(false)
     const[genderOpen, setGenderOpen] = useState(false)
     const[ageOpen, setAgeOpen] = useState(false)
@@ -48,11 +59,12 @@ function CreatePost({navigation}) {
     const[breedValue, setBreedValue] = useState(null) // Change null to something else, possibly [] to get proper error from server when left empty
     const[ageValue, setAgeValue] = useState(null)
     const[genderValue, setGenderValue] = useState(null)
-    const[desc, setDesc] = useState(null) // Change null to something else, possibly [] to get proper error from server when left empty
+    const[desc, setDesc] = useState([]) // Change null to something else, possibly [] to get proper error from server when left empty
 
     const[loading, setLoading] = useState(false)
 
     const[images, setImages] = useState([])
+    const textRef = useRef()
 
     const type = [{
         label: '😺',
@@ -102,7 +114,19 @@ function CreatePost({navigation}) {
     {
         label: '8 лет',
         value: '8 лет'
-    },]
+    },
+    {
+        label: '9 лет',
+        value: '9 лет'
+    },
+    {
+        label: '10 лет',
+        value: '10 лет'
+    },
+    {
+        label: '10 + лет',
+        value: '10 + лет'
+    }]
     const stray = [{
         label: 'да',
         value: 'Уличный'
@@ -112,10 +136,10 @@ function CreatePost({navigation}) {
     }]
     const stiril = [{
         label: 'да',
-        value: 'Стирильный'
+        value: 'Стерильный'
     }, {
         label:'нет',
-        value:'Не стирильный'
+        value:'Не стерильный'
     }]
     const jab = [{
         label: 'да',
@@ -126,18 +150,38 @@ function CreatePost({navigation}) {
     }]
 
     const tabBarHeight = useBottomTabBarHeight()
+
+    useFocusEffect(
+        React.useCallback(() => {
+
+            return () => {
+            setTypeValue(null)
+            setAgeValue(null)
+            setJabValue(null)
+            setBreedValue(null)
+            setStrayValue(null)
+            setGenderValue(null)
+            setStirilValue(null)
+            setDesc(null)
+            setImages([])
+            textRef.current.clear()
+            }
+        }, [])
+    )
     
     async function getImages() {
 
-        const result = await launchImageLibrary ({mediaType:'photo',selectionLimit:2, maxWidth:ITEM_WIDTH, maxHeight:ITEM_WIDTH, quality:0.6})
-        setImages(result.assets)
+        const result = await launchImageLibrary ({mediaType:'photo',selectionLimit:2, maxWidth:ITEM_WIDTH, maxHeight:ITEM_WIDTH, quality:0.8})
+        if(result.didCancel) {
+            setImages([])
+        } else {
+            setImages(result.assets)
+        }
     }
 
     async function sendPost() {
-       // console.log(tabBarHeight, StatusBar.currentHeight)
         
         const jwt = await AsyncStorage.getItem('jwt')
-        console.log(jwt)
 
        try{ 
            const result = await axios.post(`${links.ALL_POSTS}`, {
@@ -162,14 +206,13 @@ function CreatePost({navigation}) {
     } catch(err) {
         setLoading(false)
         console.log('Tut', breedValue, desc)
-        //alert(err.response)
-        console.log(err.response)
+        alert(err.response.data)
+        console.log(err)
     }
     }
 
     async function sendImage() {
         if(images) {
-            console.log('FOTKI', images)
             const dbUrls = []
             for(i = 0; i < images.length; i++ ) {
                 
@@ -199,6 +242,7 @@ function CreatePost({navigation}) {
     }
 
     return(
+        <SafeAreaView style={{flex:1, backgroundColor:COLORS.bej}} edges={['top']}>
         <View style={[styles.create_post_background, loading && {opacity: 0.2}]}>
             <FocusAwareStatusBar backgroundColor={COLORS.bej} barStyle='dark-content'/>
             <View style={styles.loader}>
@@ -212,30 +256,37 @@ function CreatePost({navigation}) {
             keyboardShouldPersistTaps='always' 
             behavior={Platform.OS === 'ios' ? 'padding' : null}
             style={{flex:1}}>
-            
-            <View style={[styles.post_middle_container, {height: HEIGHT-tabBarHeight-StatusBar.currentHeight}]}>
+            <HideKeyboard>
+            <View style={[styles.post_middle_container, {height: HEIGHT-68}]}>
                 <View style={[styles.post_create_image_container, {marginBottom:10}]}>
+                    
+                    {images.length == 0  &&
                     <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
-                    {images === undefined || images.length !== 2  ?
                     <TouchableOpacity 
                     style={styles.add_pic_button}
                     onPress={()=> getImages()}
                     >
                         <AntIcon name='plussquareo' size={50} color={COLORS.dark}/>
-                    </TouchableOpacity> :
+                    </TouchableOpacity>
+                    <Text style={{fontSize:20, top:10, color:COLORS.dark}}>Добавить 2 фотографии</Text>
+                    </View>
+                     }
+                    {images.length == 1 &&
+                    <View style={{flex:1, justifyContent:'center', alignItems:'center'}}>
                     <TouchableOpacity 
                     style={styles.add_pic_button}
+                    onPress={()=> getImages()}
                     >
-                    </TouchableOpacity> 
-                     }
-                    
-                    {images === undefined || images.length !== 2 ?
-                    <Text style={{fontSize:20, top:10, color:COLORS.dark}}>Добавить 2 фотографии</Text> : <Text style={{fontSize:20, top:10}}>Фотографии добавлены</Text>
-                    }
+                        <AntIcon name='plussquareo' size={50} color={COLORS.dark}/>
+                    </TouchableOpacity>
+                    <Text style={{fontSize:20, top:10, color:COLORS.dark}}>Вам нужно выбрать 2 фотографии</Text>
                     </View>
-                    {images &&
-                    <View style={{flex:0.8}}>
-                    <View style={{width:WIDTH, height:ITEM_WIDTH*0.5, alignItems:'center'}}>
+
+                    }
+                    {images[1] &&
+                    <View style={{flex:1}}>
+                    <Text style={{fontSize:25, top:10, textAlign:'center'}}>Фотографии добавлены</Text>
+                    <View style={{width:WIDTH, height:ITEM_WIDTH, alignItems:'center', top:20}}>
                         <FlatList
                         data={images}
                         renderItem={renderItem}
@@ -246,13 +297,13 @@ function CreatePost({navigation}) {
                 <View style={styles.post_info_container}>
                     <View style={styles.post_textinput_container}>
                     <TextInput
-                    placeholder='Парода'
+                    placeholder='Порода'
                     onChangeText={setBreedValue}
                     value={breedValue}
                     style={styles.post_category_textinput}
                     placeholderTextColor='black'/>
                     </View>
-                <View style={styles.post_category_container}>
+            <View style={[styles.post_category_container, {flexDirection:'row'}]}>
             <View style={styles.post_category_one_container}>
             <View style={styles.post_category_one}>
                 <View style={[styles.post_category_text_container, {zIndex:5}]}>
@@ -289,7 +340,7 @@ function CreatePost({navigation}) {
                 setOpen={setAgeOpen}
                 setValue={setAgeValue}
                 style={{height:30}}
-                containerStyle={{width:'60%'}}/>
+                containerStyle={{width:'62%'}}/>
                 </View>
             </View>
             </View>
@@ -308,7 +359,7 @@ function CreatePost({navigation}) {
                 containerStyle={{width:'60%'}}/>
                 </View>
                 <View style={[styles.post_category_text_container, {zIndex:4}]}>
-                <Text style={{color:COLORS.dark, fontWeight:'bold', fontSize:15}}>Стирил.:</Text>
+                <Text style={{color:COLORS.dark, fontWeight:'bold', fontSize:15}}>Стерил.:</Text>
                 <DropDownPicker
                 open={stirilOpen} 
                 placeholder=''
@@ -337,6 +388,7 @@ function CreatePost({navigation}) {
             <View style={styles.post_text_container}>
                 <ScrollView style={styles.post_text_scroll}>
                     <TextInput
+                    ref={textRef}
                     placeholder='Опишите все детали здесь'
                     placeholderTextColor='black'
                     onChangeText={(text)=> setDesc(text)}
@@ -355,9 +407,11 @@ function CreatePost({navigation}) {
             </View>
             </View>
             </View>
-            
+            </HideKeyboard>
             </KeyboardAwareScrollView>
+            
         </View>
+        </SafeAreaView>
     )
 }
 

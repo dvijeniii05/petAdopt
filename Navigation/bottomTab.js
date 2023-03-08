@@ -11,6 +11,7 @@ import NotificationsScreen from '../Screens/notifications'
 import ProfileScreen from '../Screens/profile'
 import MessageCreator from '../Screens/messageCreator';
 import ForumScreen from '../Screens/forumScreen';
+import DonationScreen from '../Screens/donationScreen';
 
 const Tab = createBottomTabNavigator()
 
@@ -33,7 +34,7 @@ function BottomTab ({navigation}) {
             <Tab.Screen name='Create' component={CreatePost} options={{
                 tabBarIcon: ({color}) => <AntDesign name='plus' size={30} color={color}/>
             }}/>
-            <Tab.Screen name='Forum' component={ForumScreen} options={{
+            <Tab.Screen name='Donation' component={DonationScreen} options={{
                 tabBarIcon: ({color}) => <AntDesign name='notification' size={30} color={color}/>
             }}/>
             <Tab.Screen name='UserPosts' component={UserPosts} options={{tabBarItemStyle:{display:'none'}}}/>

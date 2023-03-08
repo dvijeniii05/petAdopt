@@ -43,6 +43,7 @@ function AvatarPick({navigation}) {
                     data={avatarsData}
                     renderItem={renderItem}
                     numColumns={2}
+                    showsVerticalScrollIndicator={false}
                     horizontal={false}
                     />
                 </View>

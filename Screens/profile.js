@@ -6,21 +6,19 @@ import {
     Image,
     TouchableOpacity
 } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import FocusAwareStatusBar from '../Components/FocusAwareStatusBar'
 import {styles} from '../AllStyles'
 import {COLORS} from '../assets/colors'
 import axios from 'axios'
-import {ALL_POSTS} from '@env'
 import { links } from '../Components/links'
 import { useFocusEffect } from '@react-navigation/native'
 import { useRecoilState } from 'recoil'
-import { numberAtom } from '../atoms/numberAtom';
 import { likedAtom } from '../atoms/likedAtom'
 
 function ProfileScreen({navigation}) {
 
     const [data, setData] = useState()
-    const [mobile, setMobile] = useRecoilState(numberAtom)
     const [liked, setLiked] = useRecoilState(likedAtom)
 
     useFocusEffect(
@@ -36,8 +34,6 @@ function ProfileScreen({navigation}) {
                         console.log(err)
                     }
                 }
-                console.log(liked)
-                console.log(allData)
                 setData(allData)
             }
     
@@ -68,12 +64,13 @@ function ProfileScreen({navigation}) {
     }
 
     return(
-        <View style={{flex:1}}>
-        <View style={styles.home}>
+        <SafeAreaView style={styles.home}>
         <FocusAwareStatusBar backgroundColor={COLORS.bej} barStyle='dark-content'/>
-            
+        <View style={styles.home_middle_container}>
+                <View style={{top:20}}><Text style={{fontSize:25, color:COLORS.darkGreen}}>Ваши Фавориты</Text></View>
+            </View>
             <View style={styles.home_bottom_container}>
-            {!liked[0] && <View style={{top:20}}><Text style={{fontSize:25, color:COLORS.darkGreen}}>Ваши Фавориты</Text></View>}
+            
             <FlatList
             data={data}
             renderItem={renderItem}
@@ -82,8 +79,7 @@ function ProfileScreen({navigation}) {
             keyExtractor={(item) => item._id}
             />
             </View>
-        </View>
-        </View>
+        </SafeAreaView>
     )
 }
 

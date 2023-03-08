@@ -3,8 +3,10 @@ import {
     View,
     Text,
     Image,
-    Linking
+    Linking,
+    Dimensions
 } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import {
     DrawerContentScrollView,
   DrawerItem,
@@ -26,18 +28,20 @@ const avatarSelector = picker => {
     return Avatars[picker]
 }
 
+const {width: WIDTH, height: HEIGHT} = Dimensions.get('window')
+
     return(
-        <View style={styles.drawer_main_bg}>
+        <SafeAreaView style={styles.drawer_main_bg}>
             <View style={styles.drawer_top_container}>
                 <View style={styles.avatar_container}>
                     <Image source={avatarSelector(avatar)} resizeMode='contain' style={{height:110, width:110}}/>
                 </View>
                 <View style={{paddingTop:20}}>
-                        <Text style={{color:'black'}}>{realname}</Text>
+                        <Text style={{color:'black', textAlign:'center'}}>{realname}</Text>
                 </View>
             </View>
         <DrawerContentScrollView {...props} contentContainerStyle={styles.contentContainerStyle}>
-            <View>
+            <View  style={{ height:0.4*HEIGHT, justifyContent:'space-evenly'}}>
             <DrawerItem 
             label='Главная'
             icon={() => <AntDesign name='home' size={22} color={COLORS.dark}/>}
@@ -57,7 +61,7 @@ const avatarSelector = picker => {
             labelStyle={{color:COLORS.dark, fontSize:15}}
             />
             <DrawerItem 
-            label='Уведомления'
+            label='Фонды помощи'
             icon={() => <AntDesign name='notification' size={22} color={COLORS.dark}/>}
             onPress={() => props.navigation.navigate('Forum')}
             labelStyle={{color:COLORS.dark, fontSize:15}}
@@ -71,7 +75,7 @@ const avatarSelector = picker => {
                 <Text style={{color:COLORS.dark}}>Тех. Поддержка тут @veryrare104</Text>
             </TouchableOpacity>
         </View>
-        </View>
+        </SafeAreaView>
     )
 }
 

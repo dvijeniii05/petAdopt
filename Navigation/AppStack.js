@@ -50,10 +50,11 @@ function AppDrawer () {
   useEffect(() => {
     getUser()
     getLiked()
-  }, [])
+  }, [emailUser])
 
   async function getUser() {
     const storedEmail = await AsyncStorage.getItem('email')
+    console.log('EMAIL IS STORED', storedEmail)
     if(storedEmail) {
       try{
         const userInfo = await axios.post(`${links.GET_USER}`, {
@@ -73,7 +74,7 @@ function AppDrawer () {
 
   async function getLiked() {
     const getData = await AsyncStorage.getItem('liked')
-    console.log(getData)
+    
     if(getData != null) {
       setLiked(JSON.parse(getData))
     } else {setLiked([])}
