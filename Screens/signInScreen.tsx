@@ -1,16 +1,11 @@
-import React, {PropsWithChildren, useState} from 'react'
+import React, { useState } from 'react'
 import {
     Text,
     View,
     TextInput,
     Image,
-    Dimensions,
-    Keyboard,
-    Platform,
     TouchableOpacity,
-    TouchableWithoutFeedback,
     ActivityIndicator,
-    StatusBar
 } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { styles } from '../AllStyles'

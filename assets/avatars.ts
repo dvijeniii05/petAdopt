@@ -1,3 +1,4 @@
+
 export const Avatars = {
     'cat1': require('../assets/avatars/Cat_01.png'),
     'cat2': require('../assets/avatars/Cat_02.png'),
